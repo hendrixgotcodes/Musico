@@ -1,40 +1,55 @@
+// import 'react-native-gesture-handler';
+
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View, ImageBackground, StatusBar as RNStatusBar, Platform } from 'react-native';
-import Home from './components/pages/Home';
-import Navbar from './components/Navbar'
-
 import {LinearGradient} from 'expo-linear-gradient'
+import {createStackNavigator} from '@react-navigation/stack'
+import {createDrawerNavigator} from '@react-navigation/drawer'
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
+
+
+import Home from './components/pages/Home';
+import Search from './components/pages/Search';
 import variables from './utils/variables';
-import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
 import MusicBar from './components/MusicBar'
 import MusicDetail from './components/MusicDetail'
 
+const Stack = createStackNavigator()
+const Drawer = createDrawerNavigator()
+
 export default function App() {
 
+  const appTheme = {
+
+      ...DefaultTheme,
+      colors: {
+        ...DefaultTheme.colors,
+        primary: variables.colors.secondary,
+        card: variables.colors.primary,
+        text: "#babbbc"
+      }
+
+  }
 
   return (
-    
-    <SafeAreaView
-      // colors={["rgb(61,68,78)", "rgb(12,14,16)"]} 
-      style={styles.container}
-      >
-        <LinearGradient colors={[variables.colors.primary ,variables.colors.primary_darker]}>
+  
+          <NavigationContainer theme={appTheme}>
 
-          {/* <Navbar />
-          <Home />
-          <StatusBar  style="auto" />
-          <MusicBar /> */}
+            <Drawer.Navigator
 
-          <MusicDetail />
+                screenOptions={
+                {
+                  headerShown: false
+                }
+              }
 
-        </LinearGradient>
-
-
-        {/* <ItemDetail /> */}
-
-        
-    </SafeAreaView>
+            >
+              <Drawer.Screen name="Home" component={Home} />
+              <Drawer.Screen name="Search" component={Search} />
+            </Drawer.Navigator>
+          
+          </NavigationContainer>
 
 
   )

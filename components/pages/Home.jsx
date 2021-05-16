@@ -1,173 +1,192 @@
 import React from 'react'
-import { Button, SafeAreaView, Text, View, StyleSheet, ScrollView} from 'react-native'
-import variables from '../../utils/variables'
+import { Button, SafeAreaView, Text, View, StyleSheet, ScrollView, Platform, StatusBar} from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
 
+import variables from '../../utils/variables'
 import Carousel from '../utils/Carousel.jsx'
 import CardContainer from '../utils/CardContainer.jsx'
 import Card from '../utils/Card.jsx'
+import Navbar from '../../components/Navbar'
+
 
 export default function Home() {
 
     return (
-        <View style={styles.home}>
-            
-            <View>
-                <Text style={styles.pageTitle}>Home</Text>
-            </View>
 
-            <Carousel imgSrc={require('../../assets/img/home/arnddaglobe.jpg')} btnText={"Search around the globe"} />
+        <SafeAreaView
+            // colors={["rgb(61,68,78)", "rgb(12,14,16)"]} 
+            style={styles.safeAreaView}
+            >
+                <LinearGradient colors={[variables.colors.primary ,variables.colors.primary_darker]}>
 
-            <ScrollView style={styles.center}>
+                    <View style={styles.home}>
 
-                <CardContainer title="Trending">
+                        <Navbar />
+                        
+                        <View>
+                            <Text style={styles.pageTitle}>Home</Text>
+                        </View>
 
-                    <Card 
-                       
-                        title="K.O.D" 
-                        subTile="J. Cole"
-                        imgSrc= {require("../../assets/img/album_covers/JColeKOD.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Two®" 
-                        subTile="Lil Uzi Vert"
-                        imgSrc= {require("../../assets/img/album_covers/liluzi.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Fall" 
-                        subTile="Davido"
-                        imgSrc= {require("../../assets/img/album_covers/agoodtime.jpeg")}  
-                    />
-                    <Card 
-                       
-                        title="Ye" 
-                        subTile="Burna Boy"
-                        imgSrc= {require("../../assets/img/album_covers/burna.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Oluejegba" 
-                        subTile="Wizkid"
-                        imgSrc= {require("../../assets/img/album_covers/wixkid.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Pain" 
-                        subTile="Ryan Jones"
-                        imgSrc= {require("../../assets/img/album_covers/albumcover.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="More" 
-                        subTile="Tap to more"
-                        imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
-                    />
+                        <Carousel imgSrc={require('../../assets/img/home/arnddaglobe.jpg')} btnText={"Search around the globe"} />
 
-                    
+                        <ScrollView style={styles.center}>
 
-                </CardContainer>
-                <CardContainer title="Fresh Music">
+                            <CardContainer title="Trending">
 
-                    <Card 
-                       
-                        title="Mary" 
-                        subTile="Sarkodie"
-                        imgSrc= {require("../../assets/img/album_covers/Sarkodie.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Eat" 
-                        subTile="Stoneboy"
-                        imgSrc= {require("../../assets/img/album_covers/stoneboy.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="K.O.D" 
-                        subTile="J. Cole"
-                        imgSrc= {require("../../assets/img/album_covers/Emeryld.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Forever" 
-                        subTile="Gyakie"
-                        imgSrc= {require("../../assets/img/album_covers/gyakie.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Starboy" 
-                        subTile="The Weekend"
-                        imgSrc= {require("../../assets/img/album_covers/theWeekend.jpg")}  
-                    />
+                                <Card 
+                                
+                                    title="K.O.D" 
+                                    subTile="J. Cole"
+                                    imgSrc= {require("../../assets/img/album_covers/JColeKOD.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Two®" 
+                                    subTile="Lil Uzi Vert"
+                                    imgSrc= {require("../../assets/img/album_covers/liluzi.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Fall" 
+                                    subTile="Davido"
+                                    imgSrc= {require("../../assets/img/album_covers/agoodtime.jpeg")}  
+                                />
+                                <Card 
+                                
+                                    title="Ye" 
+                                    subTile="Burna Boy"
+                                    imgSrc= {require("../../assets/img/album_covers/burna.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Oluejegba" 
+                                    subTile="Wizkid"
+                                    imgSrc= {require("../../assets/img/album_covers/wixkid.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Pain" 
+                                    subTile="Ryan Jones"
+                                    imgSrc= {require("../../assets/img/album_covers/albumcover.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="More" 
+                                    subTile="Tap to more"
+                                    imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
+                                />
 
-                     <Card 
-                       
-                        title="More" 
-                        subTile="Tap to more"
-                        imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
-                    />
+                                
 
-                    
+                            </CardContainer>
+                            <CardContainer title="Fresh Music">
 
-                </CardContainer>
-                <CardContainer title="Suggested Artistes">
+                                <Card 
+                                
+                                    title="Mary" 
+                                    subTile="Sarkodie"
+                                    imgSrc= {require("../../assets/img/album_covers/Sarkodie.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Eat" 
+                                    subTile="Stoneboy"
+                                    imgSrc= {require("../../assets/img/album_covers/stoneboy.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="K.O.D" 
+                                    subTile="J. Cole"
+                                    imgSrc= {require("../../assets/img/album_covers/Emeryld.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Forever" 
+                                    subTile="Gyakie"
+                                    imgSrc= {require("../../assets/img/album_covers/gyakie.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Starboy" 
+                                    subTile="The Weekend"
+                                    imgSrc= {require("../../assets/img/album_covers/theWeekend.jpg")}  
+                                />
 
-                    <Card 
-                       
-                        title="Shatta Wale" 
-                        subTile=""
-                        imgSrc= {require("../../assets/img/album_covers/shatta.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Jay Bahd" 
-                        subTile=""
-                        imgSrc= {require("../../assets/img/album_covers/jaybad.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="O'Kenneth" 
-                        subTile=""
-                        imgSrc= {require("../../assets/img/album_covers/oken.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="K.O.D" 
-                        subTile="J. Cole"
-                        imgSrc= {require("../../assets/img/album_covers/Emeryld.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Wizkid" 
-                        subTile=""
-                        imgSrc= {require("../../assets/img/album_covers/wixkid.jpg")}  
-                    />
-                    <Card 
-                       
-                        title="Travis Scott" 
-                        subTile=""
-                        imgSrc= {require("../../assets/img/album_covers/stargazing.jpg")}  
-                    />
+                                <Card 
+                                
+                                    title="More" 
+                                    subTile="Tap to more"
+                                    imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
+                                />
 
-                     <Card 
-                       
-                        title="More" 
-                        subTile="Tap to more"
-                        imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
-                    />
+                                
 
-                    
+                            </CardContainer>
+                            <CardContainer title="Suggested Artistes">
 
-                </CardContainer>
-               
-            </ScrollView>
+                                <Card 
+                                
+                                    title="Shatta Wale" 
+                                    subTile=""
+                                    imgSrc= {require("../../assets/img/album_covers/shatta.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Jay Bahd" 
+                                    subTile=""
+                                    imgSrc= {require("../../assets/img/album_covers/jaybad.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="O'Kenneth" 
+                                    subTile=""
+                                    imgSrc= {require("../../assets/img/album_covers/oken.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="K.O.D" 
+                                    subTile="J. Cole"
+                                    imgSrc= {require("../../assets/img/album_covers/Emeryld.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Wizkid" 
+                                    subTile=""
+                                    imgSrc= {require("../../assets/img/album_covers/wixkid.jpg")}  
+                                />
+                                <Card 
+                                
+                                    title="Travis Scott" 
+                                    subTile=""
+                                    imgSrc= {require("../../assets/img/album_covers/stargazing.jpg")}  
+                                />
 
-        </View>
+                                <Card 
+                                
+                                    title="More" 
+                                    subTile="Tap to more"
+                                    imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
+                                />
+
+                                
+
+                            </CardContainer>
+                        
+                        </ScrollView>
+
+                    </View>
+                </LinearGradient>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-
+    safeAreaView:{
+        backgroundColor: variables.colors.primary,
+        width: "100%",
+        height: "100%",
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    },
     home:{
         width: "100%",
         height: "100%",

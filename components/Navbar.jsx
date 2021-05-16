@@ -1,20 +1,34 @@
 import React from 'react'
-import { View, StyleSheet, Platform } from 'react-native'
+import { View, StyleSheet, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import {useNavigation} from '@react-navigation/native'
+
 
 import variables from '../utils/variables'
 
 export default function Navbar() {
 
-    console.log(Platform.OS, "ok");
+    const navigation = useNavigation()
 
+    const handleSearchOnPress = ()=>{
+
+       navigation.navigate("Search")
+
+    }
+    const handleMenuOnPress =()=>{
+        navigation.toggleDrawer()
+    }
 
     return (
         <View style={styles.navBar}>
 
-            <Ionicons name="menu-outline" color={variables.colors.secondary} size={variables.fonts.size}/>
+            <Pressable onPress={handleMenuOnPress}>
+                <Ionicons name="menu-outline" color={variables.colors.secondary} size={variables.fonts.size}/>
+            </Pressable>
 
-            <Ionicons name="search-outline" color={variables.colors.secondary} size={variables.fonts.size} />
+            <Pressable onPress={handleSearchOnPress}>
+                <Ionicons name="search-outline" color={variables.colors.secondary} size={variables.fonts.size} />
+            </Pressable>
 
 
         </View>
