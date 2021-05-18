@@ -1,5 +1,13 @@
 import React from 'react'
-import { Button, SafeAreaView, Text, View, StyleSheet, ScrollView, Platform, StatusBar} from 'react-native'
+import { Button, 
+        SafeAreaView, 
+        Text, 
+        View, 
+        StyleSheet, 
+        ScrollView, 
+        Platform, 
+        StatusBar} 
+from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
 import variables from '../../utils/variables'
