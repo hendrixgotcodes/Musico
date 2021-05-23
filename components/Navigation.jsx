@@ -4,6 +4,9 @@ import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
 import {useSelector, useDispatch} from 'react-redux'
 import {createStackNavigator} from '@react-navigation/stack'
 import {createDrawerNavigator} from '@react-navigation/drawer'
+import fb,{fetchUserData} from '../services/firebase'
+import Toast from 'react-native-simple-toast'
+
 
 import variables from '../utils/variables';
 import Home from './pages/Home';
@@ -11,11 +14,11 @@ import WelcomeScreen from './pages/WelcomScreen'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import Search from './pages/Search';
-import {selectUserLoginState} from '../store/features/userSlice'
+import Settings from './pages/Settings';
 import DrawerContent from './utils/DrawerContent'
 import MusicDetail from './MusicDetail'
-import fb,{handleUserProfile} from '../services/firebase'
 
+import {selectUserLoginState, userSliceActions} from '../store/features/userSlice'
 import {
     songSliceActions, 
     selectSongPlayingState, 
@@ -31,16 +34,26 @@ import {
 
 export default function Navigation() {
 
+
+    const loggedIn = useSelector(selectUserLoginState)
+    const dispatch = useDispatch()
+
     useEffect(() => {
         fb.auth()
-        .onAuthStateChanged((user)=>{
-            if(user){
-                handleUserProfile(user)
+        .onAuthStateChanged((userAuth)=>{
+            if(userAuth){
+                fetchUserData(userAuth)
+                .then((user)=>{
+                    dispatch(userSliceActions.setUserProps(user))
+                })
+                .then(()=>{
+                    
+                    dispatch(userSliceActions.logIn())
+                    Toast.show("Automatic login detected.", Toast.LONG)
+                })
             }
         })
     }, [])
-
-    const loggedIn = useSelector(selectUserLoginState)
     
     const LoggedOutStack = createStackNavigator()
     const AppRootStack = createStackNavigator()
@@ -82,6 +95,7 @@ export default function Navigation() {
                             
                             <Drawer.Screen name="Home" component={Home} />
                             <Drawer.Screen name="Search" component={Search} />
+                            <Drawer.Screen name="Settings" component={Settings} />
                         </Drawer.Navigator>
 
                     ) :(

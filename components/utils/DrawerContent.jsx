@@ -16,15 +16,17 @@ import Toast from 'react-native-simple-toast'
 
 
 import variables from '../../utils/variables'
-import {selectUserLoginState, userSliceActions} from '../../store/features/userSlice'
+import {selectUserLoginState, selectUserPropsState,userSliceActions} from '../../store/features/userSlice'
 import fb, {GoogleProvider} from '../../services/firebase'
 import Modal from '../utils/Modal'
+
 
 
 
 export default function DrawerContent(props) {
 
     const dispatch = useDispatch()
+    const userProps = useSelector(selectUserPropsState)
 
     const [appStatus, setAppStatus] = useState({
         modalShown: false,
@@ -49,27 +51,46 @@ export default function DrawerContent(props) {
 
     }
 
+    const handleAccounSettingsOnPressed =()=>{
+        navigation.navigate("Settings")
+    }
+
     const handleLogOutOnPressed = ()=>{
 
-        dispatch(userSliceActions.logOut())
+        setModalShown(true)
+        setModalText("Signing you out...")
+
+        fb.auth()
+            .signOut()
+            .then(()=>{
+                setModalShown(true)
+            })
+            .then(()=>{
+                dispatch(userSliceActions.logOut())
+            })
+
 
     }
     
 
     return (
+
+
+
         <View style={styles.container}>
 
             <DrawerContentScrollView {...props}>
 
                 <View style={[styles.userInfoSection]}>
                     <Avatar.Image
-                        source={require("../../assets/img/album_covers/davido.jpg")}
+                        source={userProps?.avatar}
                         size={50}
+                        backgroundColor={variables.colors.secondary}
                      />
 
                     <View style={styles.userBio}>
-                        <Title style={styles.title}>Samuel Asare</Title>
-                        <Caption style={styles.caption}>asare11samuel@gmail.com</Caption>
+                        <Title style={styles.title}>{`${userProps?.first_name} ${userProps?.last_name}`}</Title>
+                        <Caption style={styles.caption}>{userProps?.email}</Caption>
                     </View>
                 </View>
 
@@ -117,6 +138,18 @@ export default function DrawerContent(props) {
             </DrawerContentScrollView>
 
             <Drawer.Section>
+               <Pressable onPress={handleAccounSettingsOnPressed}>
+
+                    <View style={styles.logOutSection}>
+                        <Ionicons 
+                            name="person-outline"
+                            color="#fff"
+                            size={16}
+                        /> 
+                        <Text style={{fontSize: 16, color: "#fff",  marginLeft: 5}}>Account Settings</Text>
+                    </View>
+
+               </Pressable>
                <Pressable onPress={handleLogOutOnPressed}>
 
                     <View style={styles.logOutSection}>

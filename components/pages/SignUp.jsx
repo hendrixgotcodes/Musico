@@ -10,6 +10,7 @@ import {Ionicons} from '@expo/vector-icons'
 import {LinearGradient} from 'expo-linear-gradient'
 import {useSelector, useDispatch} from 'react-redux'
 import Toast from 'react-native-simple-toast'
+import {Snackbar} from 'react-native-paper'
 
 
 import {selectUserLoginState, userSliceActions} from '../../store/features/userSlice'
@@ -116,7 +117,7 @@ export default function SignIn({navigation}) {
                     user.delete()
                         .then(()=>{
 
-                            Toast.show("An error occured while signing up. Please try later!")
+                            Toast.show("An error occured while signing up. Please try later!",Toast.LONG)
 
                         })
 
@@ -150,6 +151,16 @@ export default function SignIn({navigation}) {
 
 
                 <View style={styles.container}>
+
+                    {/* <Snackbar
+                        visible={true}
+                        onDismiss={()=>{
+                            setModalShown(false)
+                        }}
+                        style={styles.snackbar}
+                    >
+                        <View><Text>{modalText}</Text></View>
+                    </Snackbar> */}
 
                     <View>
                         <View style={styles.header}>
@@ -280,6 +291,14 @@ const styles= StyleSheet.create({
         flexDirection: "column",
         justifyContent: "space-between",
     },
+    // snackbar:{
+    //     backgroundColor: "#fff",
+    //     position: "relative",
+    //     left: 0,
+    //     width: "80%",
+    //     bottom: 10
+    // }
+    // ,
     header: {
         width: "100%",
         display: "flex",

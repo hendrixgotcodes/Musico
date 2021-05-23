@@ -58,7 +58,6 @@ export const GoogleProvider = firebase.auth.GoogleAuthProvider
 
 export const handleUserProfile = (userAuth, additionalData)=>{
 
-  console.log("in hup");
 
     return new Promise((resolve, reject)=>{
 
@@ -112,11 +111,12 @@ export const fetchUserData = (userAuth)=>{
 
         const {uid} = userAuth
 
-        const userRef = firestore.doc(`artistes/${uid}`)
+        const userRef = firebase.firestore().doc(`artistes/${uid}`)
         userRef.get()
         .then((snapShot)=>{
 
-            if(snapShot.exists())
+
+            if(snapShot.exists)
             {
               resolve(snapShot.data())
             }
