@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {View, StatusBar as RNStatusBar, Platform, StyleSheet} from 'react-native'
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
 import {useSelector, useDispatch} from 'react-redux'
@@ -13,14 +13,37 @@ import SignUp from './pages/SignUp'
 import Search from './pages/Search';
 import {selectUserLoginState} from '../store/features/userSlice'
 import DrawerContent from './utils/DrawerContent'
+import MusicDetail from './MusicDetail'
+import fb,{handleUserProfile} from '../services/firebase'
+
+import {
+    songSliceActions, 
+    selectSongPlayingState, 
+    selectSongRepeatState,
+    selectSongFavoriteState,
+    selectSongArtsiteState,
+    selectSongTitleState,
+    selectSongImgSrcState
+} from '../store/features/songSlice'
 
 // import MusicBar from './components/MusicBar'
 // import MusicDetail from './components/MusicDetail'
 
 export default function Navigation() {
 
+    useEffect(() => {
+        fb.auth()
+        .onAuthStateChanged((user)=>{
+            if(user){
+                handleUserProfile(user)
+            }
+        })
+    }, [])
+
     const loggedIn = useSelector(selectUserLoginState)
     
+    const LoggedOutStack = createStackNavigator()
+    const AppRootStack = createStackNavigator()
     const Stack = createStackNavigator()
     const Drawer = createDrawerNavigator()
 
@@ -36,47 +59,70 @@ export default function Navigation() {
         }
   
     }
+
+    const AppMainStackScreen = ()=>{
+
+        return(
+
+            <>
+                {
+                    loggedIn === true ? (
+
+                        <Drawer.Navigator
+
+                            screenOptions={
+                                {
+                                headerShown: false
+                                }
+                            }
+
+                            drawerContent={(props)=>(<DrawerContent {...props} />)}
+
+                        >
+                            
+                            <Drawer.Screen name="Home" component={Home} />
+                            <Drawer.Screen name="Search" component={Search} />
+                        </Drawer.Navigator>
+
+                    ) :(
+
+                        <Stack.Navigator
+                             screenOptions={
+                                {
+                                headerShown: false
+                                }
+                            }
+                        >
+                            <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                            <Stack.Screen name="SignUp" component={SignUp} />
+                            <Stack.Screen name="SignIn" component={SignIn} />
+                        </Stack.Navigator>
+
+                    )
+                }
+            </>
+
+        )
+
+    }
     
     return (
 
         <NavigationContainer theme={appTheme}>
 
-            {
-                loggedIn === true ? (
+           <AppRootStack.Navigator
+                screenOptions={
+                    {
+                    headerShown: false
+                    }
+                }
+                mode="modal"
+           >
 
-                    <Drawer.Navigator
+                <AppRootStack.Screen name="Main" component={AppMainStackScreen} />
+                <AppRootStack.Screen name="MusicDetail" component={MusicDetail} />
 
-                        screenOptions={
-                            {
-                            headerShown: false
-                            }
-                        }
-
-                        drawerContent={(props)=>(<DrawerContent {...props} />)}
-
-                    >
-                        
-                        <Drawer.Screen name="Home" component={Home} />
-                        <Drawer.Screen name="Search" component={Search} />
-                    </Drawer.Navigator>
-
-                ) :(
-
-                    <Stack.Navigator
-                        screenOptions={
-                            {
-                            headerShown: false
-                            }
-                        }
-                    >
-                        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                        <Stack.Screen name="SignUp" component={SignUp} />
-                        <Stack.Screen name="SignIn" component={SignIn} />
-                    </Stack.Navigator>
-
-                )
-            }
-
+           </AppRootStack.Navigator>
             
             
         </NavigationContainer>

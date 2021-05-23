@@ -1,5 +1,5 @@
-import React from 'react'
-import {View, StyleSheet, Pressable, SafeAreaView,Platform, StatusBar, TextInput} from 'react-native'
+import React, {useState, useEffect} from 'react'
+import {View, StyleSheet, Pressable, SafeAreaView,Platform, StatusBar, TextInput, Image} from 'react-native'
 import {
     Title,
     Caption,
@@ -9,19 +9,58 @@ import {
 import {Ionicons} from '@expo/vector-icons'
 import {LinearGradient} from 'expo-linear-gradient'
 import {useSelector, useDispatch} from 'react-redux'
+import Toast from 'react-native-simple-toast'
 
 
-import variables from '../../utils/variables'
 import {selectUserLoginState, userSliceActions} from '../../store/features/userSlice'
+import variables from '../../utils/variables'
+import fb, {GoogleProvider, handleUserProfile} from '../../services/firebase'
+import Modal from '../utils/Modal'
+
 
 
 export default function SignIn({navigation}) {
 
+    useEffect(() => {
+        
+        // fb.auth().onAuthStateChanged((userAuth)=>{
+
+        //     if(userAuth){
+        //         handleUserProfile(userAuth, {
+        //             albums: null,
+        //             avatar: null,
+        //             favorites: null,
+        //             first_name: firstName,
+        //             last_name: lastName,
+        //             followers: null,
+        //             following: null
+        //         })
+        //         .then((snapshot)=>{
+        //             // console.log(snapshot);
+        //         })
+        //         .catch(()=>{
+        //             Toast.show("An error occured while signing up. Please try later!")
+        //          })
+        //     }
+
+        // })
+
+    },[])
+
     const dispatch = useDispatch()
+
+    const [modalShown, setModalShown] = useState(false)
+    const [modalText, setModalText] = useState("")
+    
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
 
     const handleReturnKeyOnPress= ()=>{
 
-        navigation.navigate("Welcome")
+        navigation.goBack()
 
     }
     
@@ -33,16 +72,82 @@ export default function SignIn({navigation}) {
 
     const handleSignUpOnPress = ()=>{
 
-        dispatch(userSliceActions.logIn())
+        if(password !== confirmPassword)
+        {
+            Toast.show("The two passwords do not match.")
+            return
+        }
+
+        setModalShown(true)
+        setModalText(`Signing you up!`)
+
+
+        const provider = new GoogleProvider()
+        fb.auth().createUserWithEmailAndPassword(email, password)
+            .then((result)=>{
+
+                handleUserProfile(result.user, {
+                    albums: null,
+                    avatar: null,
+                    favorites: null,
+                    first_name: firstName,
+                    last_name: lastName,
+                    followers: null,
+                    following: null
+                })
+                .then((snapshot)=>{
+                    setModalShown(false)
+                    setModalText(``)
+
+                    setEmail("")
+                    setFirstName("")
+                    setLastName("")
+                    setPassword("")
+
+                    dispatch(userSliceActions.logIn())
+                })
+                .catch(()=>{
+
+                    setModalShown(false)
+                    setModalText(``)
+
+                    const user = firebase.auth().currentUser
+
+                    user.delete()
+                        .then(()=>{
+
+                            Toast.show("An error occured while signing up. Please try later!")
+
+                        })
+
+                 })
+
+                
+
+
+
+            })
+            .catch((err)=>{
+                setModalShown(false)
+                setModalText(``)
+                Toast.show(err.message, Toast.LONG)
+            })
 
     }
 
+
+
     return (
         <SafeAreaView style={styles.safeAreaView}>
+
+            <Modal shown={modalShown} text={modalText} />
+
+
             <LinearGradient 
                     colors={[variables.colors.primary ,variables.colors.primary_darker]}
                     style={styles.linearGradient}
                 >
+
 
                 <View style={styles.container}>
 
@@ -62,7 +167,7 @@ export default function SignIn({navigation}) {
                                 Hi there,
                                 {"\n"}Proceed with sign up.
                             </Text>
-                            <Text style={{fontWeight: "normal", fontSize: 20, color: "#BABABB", marginTop: 10}}>
+                            <Text style={{fontWeight: "normal", fontSize: 20, color: "#BABABB", marginTop: 5}}>
                                 Sign up to begin listening.
                             </Text>
                         </View>
@@ -71,32 +176,54 @@ export default function SignIn({navigation}) {
 
                             <TextInput 
                                 placeholder="First name" 
-                                color="red"
-                                style={styles.textInput} 
+                                placeholderTextColor="#7D7D7D"
+                                style={styles.textInput}
+                                value={firstName}
+                                onChangeText={(text)=>{
+                                    setFirstName(text)
+                                }}
                             />
                             <TextInput 
                                 placeholder="Last name" 
-                                color="red"
-                                style={styles.textInput} 
+                                style={styles.textInput}
+                                placeholderTextColor="#7D7D7D"
+                                value={lastName}
+                                onChangeText={(text)=>{
+                                    setLastName(text)
+                                    console.log(lastName);
+                                }}
                             />
                             <TextInput 
                                 placeholder="Email" 
                                 color="red"
                                 style={styles.textInput} 
+                                value={email}
+                                placeholderTextColor="#7D7D7D"
+                                onChangeText={(text)=>{
+                                    setEmail(text)
+                                }}
                             />
 
                             <TextInput 
                                 placeholder="Password" 
-                                placeholderColor="#BABABB"
+                                placeholderTextColor="#7D7D7D"
                                 style={styles.textInput}
                                 secureTextEntry={true}
+                                value={password}
+                                onChangeText={(text)=>{
+                                    setPassword(text)
+                                }}
                             />
 
                             <TextInput 
                                 placeholder="Confirm password" 
-                                placeholderColor="#BABABB"
+                                placeholderTextColor="#7D7D7D"
                                 style={[styles.textInput, {marginBottom: 0}]}
                                 secureTextEntry={true}
+                                value={confirmPassword}
+                                onChangeText={(text)=>{
+                                    setConfirmPassword(text)
+                                }}
                             />
 
                         </View>
@@ -122,6 +249,7 @@ export default function SignIn({navigation}) {
                                 </Text>
                             </View>
                         </Pressable>
+                        
                     </View>
 
                     
@@ -161,15 +289,13 @@ const styles= StyleSheet.create({
         paddingVertical: variables.padding.horizontal
     },
     title:{
-        // color: variables.colors.secondary,
         color: "#fff",
         fontSize: 28,
         fontWeight: "bold",
-        margin: 0
         
     },
     greetings:{
-        marginTop: 25
+        marginTop: 20
     },
     textInputWrapper:{
         width: "100%",
@@ -179,7 +305,7 @@ const styles= StyleSheet.create({
         width: "90%",
         borderWidth: 1,
         borderColor: "#BABABB",
-        padding: 10,
+        padding: 8,
         marginBottom: 20,
         borderRadius: 8,
         color:  "#BABABB",
@@ -199,8 +325,8 @@ const styles= StyleSheet.create({
     },
     btnWrapper:{
         width: "70%",
-        marginVertical: 20,
-        height: "20%"
+        marginVertical: 10,
+        height: "22%"
     },
     btn:{
         width: "100%",
@@ -214,6 +340,21 @@ const styles= StyleSheet.create({
     btnText:{
         fontSize: 16,
         color: "#fff"
+    },
+    btnGoogle: {
+        width: "70%",
+        backgroundColor: "#fff",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 8,
+        height: 50
+    },
+    googleBtnImg:{
+        width: 30,
+        height: 30,
+        marginRight: 5
     }
 
 })

@@ -1,13 +1,17 @@
 import React from 'react'
-import {View, StyleSheet, Text, Image} from 'react-native'
-import variables from '../utils/variables'
-
+import {View, StyleSheet, Text, Image, Pressable} from 'react-native'
 import {Ionicons} from '@expo/vector-icons'
 
-export default function MusicBar({imgSrc}) {
+import variables from '../utils/variables'
+
+
+
+export default function MusicBar({imgSrc,title, subTile, isSongPlaying, onPressHandle, playOnPressHandle}) {
+
     return (
-        <View 
-            style={styles.container}
+        <Pressable 
+            style={[styles.container, {bottom: isSongPlaying === true ? 0 : "-100%"}]}
+            onPress={onPressHandle}
         >
             
             <View style={styles.loader} />
@@ -15,23 +19,25 @@ export default function MusicBar({imgSrc}) {
             <View style={styles.itemDetails}>
 
                 <Image 
-                    source={require('../assets/img/album_covers/jcole.jpg')} 
+                    source={imgSrc === "" ? require('../assets/avatars/illus_stereo.png') : imgSrc} 
                     style={styles.img}
                 />
                 <View>
-                    <Text style={styles.title} >J. Cole</Text>
-                    <Text style={styles.subTile}>She's mine</Text>
+                    <Text style={styles.title} >{title}</Text>
+                    <Text style={styles.subTile}>{subTile}</Text>
                 </View>
 
             </View>
 
-            <Ionicons 
-                name="play-circle-outline" 
-                size={variables.fonts.size} 
-                color="white"  
-            />
+            <Pressable onPress={playOnPressHandle}>
+                <Ionicons 
+                    name= {isSongPlaying === true ? "pause-circle-outline" : "play-circle-outline" }
+                    size={variables.fonts.size} 
+                    color="white"  
+                />
+            </Pressable>
 
-        </View>
+        </Pressable>
     )
 }
 
@@ -39,7 +45,7 @@ const styles = StyleSheet.create({
 
     container: {
         position: "absolute",
-        bottom: 45,
+        bottom: 0,
         left: 0,
         width: "100%",
         height: "8%",
@@ -63,13 +69,15 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        height: "100%"
     },
     img:{
         width: 40,
         height: "100%",
         borderRadius: 4,
-        backgroundColor: "red"
+        marginRight: 10,
+        resizeMode: "contain"
     },
     title:{
         fontSize: 13,

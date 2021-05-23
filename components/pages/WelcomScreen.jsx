@@ -13,7 +13,9 @@ import variables from '../../utils/variables'
 
 
 
+
 export default function SignIn({navigation}) {
+
 
     const handleSignInOnPress = ()=>{
 
@@ -67,6 +69,7 @@ export default function SignIn({navigation}) {
                     </Pressable>
 
                 </View>
+               
 
             
             </LinearGradient>

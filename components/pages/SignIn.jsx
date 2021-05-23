@@ -1,5 +1,5 @@
-import React from 'react'
-import {View, StyleSheet, Pressable, SafeAreaView,Platform, StatusBar, TextInput} from 'react-native'
+import React,{useState, useEffect} from 'react'
+import {View, StyleSheet, Pressable, SafeAreaView,Platform, Image,StatusBar, TextInput} from 'react-native'
 import {
     Title,
     Caption,
@@ -9,24 +9,74 @@ import {
 import {Ionicons} from '@expo/vector-icons'
 import {LinearGradient} from 'expo-linear-gradient'
 import {useSelector, useDispatch} from 'react-redux'
+import Toast from 'react-native-simple-toast'
 
-import variables from '../../utils/variables'
+
 import {selectUserLoginState, userSliceActions} from '../../store/features/userSlice'
+import variables from '../../utils/variables'
+import Modal from '../utils/Modal'
+// import fb from '../../services/firebase'
+import fb, {GoogleProvider, handleUserProfile} from '../../services/firebase'
+
 
 
 export default function SignIn({navigation}) {
 
+    // useEffect(() => {
+        
+    //     fb.auth()
+    //         .onAuthStateChanged((user)=>{
+
+    //             if(user){
+    //                 handleUserProfile(user)
+    //                 .then(()=>{
+    //                     dispatch(userSliceActions.logIn())
+    //                 })
+    //                 .catch((err)=>{
+    //                     console.log(err);
+    //                 })
+    //             }
+
+    //         })
+
+    //     return () => {
+    //         // cleanup
+    //     }
+    // }, [])
+
     const dispatch = useDispatch()
+    const [modalShown, setModalShown] = useState(false)
+    const [modalText, setModalText] = useState("")
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
     const handleReturnKeyOnPress= ()=>{
 
-        navigation.navigate("Welcome")
+        navigation.goBack()
 
     }
 
     const handleSignInOnPress = ()=>{
 
-        dispatch(userSliceActions.logIn())
+        // dispatch(userSliceActions.logIn())
+
+        setModalShown(true)
+        setModalText(`Signing you in!`)
+
+
+        fb.auth().signInWithEmailAndPassword(email, password)
+            .then((result)=>{
+
+                setModalShown(false)
+                setModalText(``)
+                dispatch(userSliceActions.logIn())
+            })
+            .catch((err)=>{
+                setModalShown(false)
+                setModalText(``)
+                Toast.show(err.message, Toast.LONG)
+            })
 
     }
 
@@ -36,8 +86,13 @@ export default function SignIn({navigation}) {
 
     }
 
+
+
     return (
         <SafeAreaView style={styles.safeAreaView}>
+
+            <Modal shown={modalShown} text={modalText} />
+
             <LinearGradient 
                     colors={[variables.colors.primary ,variables.colors.primary_darker]}
                     style={styles.linearGradient}
@@ -71,14 +126,23 @@ export default function SignIn({navigation}) {
                             <TextInput 
                                 placeholder="Email" 
                                 color="red"
-                                style={styles.textInput} 
+                                style={styles.textInput}
+                                placeholderTextColor= "#7D7D7D"
+                                value={email}
+                                onChangeText={(text)=>{
+                                    setEmail(text)
+                                }}
                             />
 
                             <TextInput 
                                 placeholder="Password" 
-                                placeholderColor="#BABABB"
+                                placeholderTextColor= "#7D7D7D"
                                 style={styles.textInput}
                                 secureTextEntry={true}
+                                value={password}
+                                onChangeText={(text)=>{
+                                    setPassword(text)
+                                }}
                             />
 
                         </View>
@@ -104,6 +168,10 @@ export default function SignIn({navigation}) {
                                 </Text>
                             </View>
                         </Pressable>
+                        {/* <Pressable style={styles.btnGoogle} onPress={handleGoogleBtnOnPress} >
+                                <Image source={require("../../assets/icons/google.png")} style={styles.googleBtnImg} />
+                                <Text style={[styles.btnText, {color: "#000"}]}>Sign in with google</Text>
+                        </Pressable> */}
                     </View>
 
                     
@@ -164,10 +232,10 @@ const styles= StyleSheet.create({
         padding: 10,
         marginBottom: 20,
         borderRadius: 8,
-        color:  "#BABABB",
+        color:  "#BABABB"
     },
     footer:{
-        marginBottom: variables.padding.horizontal,
+        marginBottom: 50,
         width: "90%",
         display: "flex",
         flexDirection: "column",
@@ -182,7 +250,7 @@ const styles= StyleSheet.create({
     btnWrapper:{
         width: "70%",
         marginVertical: 20,
-        height: "20%"
+        height: 50
     },
     btn:{
         width: "100%",
@@ -196,6 +264,21 @@ const styles= StyleSheet.create({
     btnText:{
         fontSize: 16,
         color: "#fff"
+    },
+    btnGoogle: {
+        width: "70%",
+        backgroundColor: "#fff",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 8,
+        height: 50
+    },
+    googleBtnImg:{
+        width: 30,
+        height: 30,
+        marginRight: 5
     }
 
 })

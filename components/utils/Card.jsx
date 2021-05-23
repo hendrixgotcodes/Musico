@@ -1,10 +1,29 @@
 import React from 'react'
-import {View, StyleSheet, Image, Text} from 'react-native'
-import variables from '../../utils/variables'
+import {View, StyleSheet, Image, Text, Pressable} from 'react-native'
+import {useDispatch} from 'react-redux'
 
-export default function Card({title, subTile, imgSrc}) {
+import variables from '../../utils/variables'
+import {songSliceActions} from '../../store/features/songSlice'
+
+export default function Card({title, subTile, imgSrc, audioSrc, handleOnCardPress="", isFavorite}) {
+
+    const dispatch = useDispatch()
+
+    if(handleOnCardPress === ""){
+        handleOnCardPress = ()=>{
+
+            dispatch(songSliceActions.playSong())
+            dispatch(songSliceActions.setArtiste(title))
+            dispatch(songSliceActions.setTitle(subTile))
+            dispatch(songSliceActions.setImgSrc(imgSrc))
+            dispatch(songSliceActions.setFavorite(isFavorite))
+           
+        }
+    }
+
+
     return (
-        <View style={styles.container}>
+        <Pressable style={styles.container} onPress={handleOnCardPress}>
 
             <Image source={imgSrc} style={styles.img} />
 
@@ -13,7 +32,7 @@ export default function Card({title, subTile, imgSrc}) {
                 <Text style={styles.subTile}>{subTile}</Text>
             </View>
             
-        </View>
+        </Pressable>
     )
 }
 

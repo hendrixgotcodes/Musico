@@ -1,30 +1,38 @@
-import React from 'react'
-import { View, StyleSheet,Pressable } from 'react-native'
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
-import {useNavigation} from '@react-navigation/native'
+import React, {useState} from 'react'
+import { View, StyleSheet,Pressable, Alert } from 'react-native'
+import { DrawerContentScrollView } from '@react-navigation/drawer'
+// import {useNavigation} from '@react-navigation/native'
 // import Icon from 'react-native-vector-icons/Ionicons'
 import {Ionicons} from '@expo/vector-icons'
 import {
     Avatar,
     Title,
     Caption,
-    Paragraph,
     Text,
     Drawer,
-    TouchableRipple,
-    Switch
 } from 'react-native-paper'
 import {useSelector, useDispatch} from 'react-redux'
+import Toast from 'react-native-simple-toast'
 
 
 import variables from '../../utils/variables'
 import {selectUserLoginState, userSliceActions} from '../../store/features/userSlice'
+import fb, {GoogleProvider} from '../../services/firebase'
+import Modal from '../utils/Modal'
 
 
 
 export default function DrawerContent(props) {
 
     const dispatch = useDispatch()
+
+    const [appStatus, setAppStatus] = useState({
+        modalShown: false,
+        modalText: "Signing out. Please wait!"
+    })
+
+    const [modalShown, setModalShown] = useState(false)
+    const [modalText, setModalText] = useState("")
 
     const navigation = props.navigation
     // console.log(props);
@@ -42,7 +50,9 @@ export default function DrawerContent(props) {
     }
 
     const handleLogOutOnPressed = ()=>{
+
         dispatch(userSliceActions.logOut())
+
     }
     
 
