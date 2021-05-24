@@ -7,28 +7,111 @@ import {
     Caption,
     Drawer,
 } from 'react-native-paper'
+import { LinearGradient } from 'expo-linear-gradient'
+import {useSelector, useDispatch} from 'react-redux'
+import * as DocumentPicker from 'expo-document-picker'
+import Toast from 'react-native-simple-toast'
+import fb, {setUserData, fetchUserData} from '../../services/firebase'
 
 
 import variables from '../../utils/variables'
-import { LinearGradient } from 'expo-linear-gradient'
+import Modal from '../utils/Modal'
+import {selectUserLoginState, selectUserPropsState,userSliceActions} from '../../store/features/userSlice'
+
 
 
 export default function Settings() {
 
+    const dispatch = useDispatch()
+    const userProps = useSelector(selectUserPropsState)
+
+    const [modalShown, setModalShown] = useState(false)
+    const [modalText, setModalText] = useState(false)
+
     const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [avatar, setAvatar] = useState("")
+
+    const [fileName, setFileName] = useState("")
+    const [fileURI, setFileURI] = useState("")
+
 
     const handleMenuOnPress = ()=>{
 
     }
 
+
     const handleCloseOnPress =()=>{
+
+
+        setModalText("uploading please wait..")
+        setModalShown(true)
+
+        const imgRef = fb.storage().ref().child(`profile_photos/${fileName}`)
+        const uploadTask = imgRef.put(fileURI,{
+            contentType: 'image/jpeg'
+        })
+        .then((result)=>{
+            
+            
+            const newRef = fb.storage().ref(`profile_photos/${fileName}`)
+            newRef.getDownloadURL()
+            .then((url)=>{
+
+                if(firstName ==="" && lastName ==="" && email === ""){
+
+                    fetchUserData(userProps)
+                    .then((user)=>{
+
+                    user.avatar = url
+                    console.log(user.avatar);
+
+                    setUserData(user)
+                    .then(()=>{
+                        Toast.show("Profile picture updated successfully.")
+                        setModalShown(false)
+                    })
+                    .catch((err)=>{
+                        setModalShown(false)
+                        Toast.show("Sorry. An error occurred.")
+                    })
+
+                    })
+
+                }
+                
+            })
+            
+        })
+
+
+    }
+
+    const handleUpdatePicOnClick = ()=>{
+
+        DocumentPicker.getDocumentAsync({
+            type: "image/*",
+            copyToCacheDirectory: false
+        })
+        .then((result)=>{
+            if(result.type!=="cancel"){
+
+               setFileName(result.name)
+               setFileURI(result.uri)
+
+            }else{
+                Toast.show("Canceled")
+            }
+        })
 
     }
 
 
     return (
         <SafeAreaView style={styles.safeAreaView}>
+
+            <Modal shown={modalShown} text={modalText} />
 
             <LinearGradient style={styles.linearGradient} colors={[variables.colors.primary ,variables.colors.primary_darker]}>
 
@@ -62,12 +145,15 @@ export default function Settings() {
                     <View style={styles.avatarWrapper}>
 
                         <Avatar.Image
-                            source={require("../../assets/img/album_covers/davido.jpg")}
+                            source={userProps?.avatar}
                             size={70}
+                            backgroundColor={variables.colors.secondary}
                         />
-                        <Caption style={styles.caption}>
-                            Update picture
-                        </Caption>
+                        <Pressable onPress={handleUpdatePicOnClick}>
+                            <Caption style={styles.caption}>
+                                Update picture
+                            </Caption>
+                        </Pressable>
 
                     </View>
 
@@ -78,9 +164,9 @@ export default function Settings() {
                                 color="red"
                                 style={styles.textInput}
                                 placeholderTextColor= "#7D7D7D"
-                                value={email}
+                                value={firstName}
                                 onChangeText={(text)=>{
-                                    setEmail(text)
+                                    setFirstName(text)
                                 }}
                             />
                             <TextInput 
@@ -88,9 +174,9 @@ export default function Settings() {
                                 color="red"
                                 style={styles.textInput}
                                 placeholderTextColor= "#7D7D7D"
-                                value={email}
+                                value={lastName}
                                 onChangeText={(text)=>{
-                                    setEmail(text)
+                                    setLastName(text)
                                 }}
                             />
 
@@ -98,10 +184,9 @@ export default function Settings() {
                                 placeholder="Email" 
                                 placeholderTextColor= "#7D7D7D"
                                 style={styles.textInput}
-                                secureTextEntry={true}
-                                value={password}
+                                value={email}
                                 onChangeText={(text)=>{
-                                    setPassword(text)
+                                    setEmail(text)
                                 }}
                             />
 

@@ -1,7 +1,6 @@
 import firebase from 'firebase'
 
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyCXDxBM-7NQBMuBPsH6LLa2wiZnLkt04Ng",
     authDomain: "musico-8d560.firebaseapp.com",
@@ -20,41 +19,10 @@ if (!firebase.apps.length) {
    fb = firebase.app(); // if already initialized, use that one
 }
 
-const fireStore = firebase.firestore()
-
 
 export default fb
 export const GoogleProvider = firebase.auth.GoogleAuthProvider
 
-// export const handleUserProfile = async (userAuth, additionalData)=>{
-
-//   if(!userAuth) return
-//   const {uid} = userAuth
-
-//   const userRef = firebase.firestore().doc(`users/${uid}`)
-//   const snapShot = await userRef.get()
-//   const {email} = userAuth
-
-
-//   if(!snapShot.exists){
-
-    
-
-//     try {
-
-//       await userRef.set({
-//       email,
-//       ...additionalData
-//     })
-      
-//     } catch (error) {
-//       console.log(error);
-//     }
-
-//   }
-//   return userRef
-
-// }
 
 export const handleUserProfile = (userAuth, additionalData)=>{
 
@@ -118,7 +86,9 @@ export const fetchUserData = (userAuth)=>{
 
             if(snapShot.exists)
             {
-              resolve(snapShot.data())
+              const user = snapShot.data()
+              user.uid = uid
+              resolve(user)
             }
 
         }).catch((err)=>{
@@ -127,5 +97,26 @@ export const fetchUserData = (userAuth)=>{
 
 
     })
+
+}
+
+export const setUserData= (userData)=>{
+
+  return new Promise((resolve, reject)=>{
+
+      console.log(userData);
+
+      const {uid} = userData
+
+      const userRef = firebase.firestore().doc(`artistes/${uid}`)
+      userRef.set(userData)
+      .then(()=>{
+        resolve()
+      })
+      .catch(()=>{
+        reject()
+      })
+
+  })
 
 }

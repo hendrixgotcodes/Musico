@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Button, 
         SafeAreaView, 
         Text, 
@@ -11,11 +11,14 @@ from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import {useSelector, useDispatch} from 'react-redux'
 
+
 import Carousel from '../utils/Carousel.jsx'
 import CardContainer from '../utils/CardContainer.jsx'
 import Card from '../utils/Card.jsx'
 import Navbar from '../../components/Navbar'
 import MusicBar from '../MusicBar'
+import {Audio} from 'expo-av'
+import Toast from 'react-native-simple-toast'
 
 import variables from '../../utils/variables'
 import {songSliceAction, 
@@ -25,9 +28,12 @@ import {songSliceAction,
         selectSongFavoriteState,
         selectSongArtsiteState,
         selectSongTitleState,
-        selectSongImgSrcState
+        selectSongImgSrcState,
+        selectSongSrcState
 } from '../../store/features/songSlice'
 // import firebase from '../../services/firebase.js'
+
+const playbackObject = new Audio.Sound()
 
 
 
@@ -42,12 +48,214 @@ export default function Home({navigation}) {
     const songArtiste = useSelector(selectSongArtsiteState)
     const songTitle = useSelector(selectSongTitleState)
     const songImgSrc = useSelector(selectSongImgSrcState)
+    const songSrc = useSelector(selectSongSrcState)
+
+    const [soundObj, setSoundObj] = useState(null)
+    const [currentAudio, setCurrentAudio] = useState({})
 
     useEffect(() => {
 
                 
     }, [])
 
+    // playbackObject.setOnPlaybackStatusUpdate(this.onPlaybackStatusHandler)
+
+    // const onPlaybackStatusHandler = (playbackStatus)=>{
+
+    // }
+
+    const handleOnCardPress = (title, subTile, imgSrc, isFavorite, src)=>{
+
+
+            
+
+            if(soundObj === null ){
+
+                playbackObject.loadAsync(
+                    src, 
+                    {shouldPlay: true}
+                )
+                .then((result)=>{
+                    setSoundObj(result)
+                    dispatch(songSliceActions.playSong())
+                    dispatch(songSliceActions.setArtiste(title))
+                    dispatch(songSliceActions.setTitle(subTile))
+                    dispatch(songSliceActions.setImgSrc(imgSrc))
+                    dispatch(songSliceActions.setFavorite(isFavorite))
+                    dispatch(songSliceActions.setSongSrc(src))
+                })
+                .catch((err)=>{
+
+                    Toast.show("Sorry an error occurred while playing song.", Toast.LONG)
+                })
+
+            }else if(soundObj !== null)
+            {
+                if(soundObj.isLoaded && soundObj.isPlaying){
+                    playbackObject.setStatusAsync({shouldPlay: false})
+                    .then((result)=>{
+                        setSoundObj(result)
+                        dispatch(songSliceActions.playSong())
+                        dispatch(songSliceActions.setArtiste(title))
+                        dispatch(songSliceActions.setTitle(subTile))
+                        dispatch(songSliceActions.setImgSrc(imgSrc))
+                        dispatch(songSliceActions.setFavorite(isFavorite))
+                        dispatch(songSliceActions.setSongSrc(src))
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                    })
+
+                }else if(soundObj.isLoaded && soundObj.isPlaying === false && songSrc === src){
+                    playbackObject.playAsync()
+                    .then((result)=>{
+                        setSoundObj(result)
+                        dispatch(songSliceActions.playSong())
+                        dispatch(songSliceActions.setArtiste(title))
+                        dispatch(songSliceActions.setTitle(subTile))
+                        dispatch(songSliceActions.setImgSrc(imgSrc))
+                        dispatch(songSliceActions.setFavorite(isFavorite))
+                        dispatch(songSliceActions.setSongSrc(src))
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                    })
+
+                }else if(soundObj.isLoaded && songSrc !== src){
+                    playbackObject.stopAsync()
+                    .then(()=>{
+                        playbackObject.unloadAsync()
+                        .then((result)=>{
+                            playbackObject.loadAsync(src, {shouldPlay: true}).
+                            then((result)=>{
+                                setSoundObj(result)
+                                dispatch(songSliceActions.playSong())
+                                dispatch(songSliceActions.setArtiste(title))
+                                dispatch(songSliceActions.setTitle(subTile))
+                                dispatch(songSliceActions.setImgSrc(imgSrc))
+                                dispatch(songSliceActions.setFavorite(isFavorite))
+                                dispatch(songSliceActions.setSongSrc(src))
+                            })
+                        })
+                    })
+                    .catch((err)=>{
+                        Toast.show("Sorry an error occurred")
+                    })
+                }
+                
+            }
+
+        
+
+        // isSongPlaying === true ? (
+        //     dispatch(songSliceActions.pauseSong())
+        // ) : (
+
+            
+
+        // )
+
+
+            
+
+            // Audio.Sound.createAsync(
+            //     {ur: src},
+            //     {shouldPlay: true}
+            // )
+            // .then((resolved)=>{
+            //     const {sound:playbackObject} = resolved
+            // })
+            // .catach((err)=>{
+            //     console.log(err);
+            // })
+           
+            // dispatch(songSliceActions.set)
+        }
+
+    const trending = [
+        {
+            title: "K.O.D",
+            subTile: "J.COle",
+            isFavorite: true,
+            imgSrc: require("../../assets/img/album_covers/JColeKOD.jpg"),
+            src: require("../../assets/music/freshmusic/JCole-KOD.mp3")
+        },
+        
+        {
+            title: "Fall",
+            subTile: "Davido",
+            isFavorite: true,
+            imgSrc: require("../../assets/img/album_covers/agoodtime.jpeg"),
+            src: require("../../assets/music/freshmusic/Davido-Fall.mp3")
+        },
+        {
+            title:"Ye",
+            subTile: "Burna Boy",
+            isFavorite: true,
+            imgSrc: require("../../assets/img/album_covers/burna.jpg"),
+            src: require("../../assets/music/freshmusic/BurnaBoy-Ye.mp3")
+        },
+        // {
+        //     title:"",
+        //     subTile: "",
+        //     isFavorite: true,
+        //     imgSrc: require("")
+        // },
+        {
+            title:"Ojuelegba",
+            subTile: "Wizkid",
+            isFavorite: false,
+            imgSrc: require("../../assets/img/album_covers/wixkid.jpg"),
+            // src: require("../../assets/music/Fresh Music/WIZKID-OJUELEGBA.mp3")
+            src: require("../../assets/music/freshmusic/WIZKID-OJUELEGBA.mp3")
+        },
+        {
+            title:"Pain",
+            subTile: "Ryan Jones",
+            isFavorite: true,
+            imgSrc: require("../../assets/img/album_covers/albumcover.jpg"),
+            src: require("../../assets/music/freshmusic/RyanJones-Pain.mp3")
+        }
+    ]
+
+    const freshMusic = [
+        {
+            title: "Mary",
+            subTile: "Sarkodie",
+            isFavorite: false,
+            imgSrc: require("../../assets/img/album_covers/Sarkodie.jpg"),
+            src: require("../../assets/music/freshmusic/Sarkodie-Mary.mp3")
+        },
+        {
+            title: "Eat",
+            subTile: "Stoneboy",
+            isFavorite: false,
+            imgSrc: require("../../assets/img/album_covers/stoneboy.jpg"),
+            src: require("../../assets/music/freshmusic/Stoneboy-Eat.mp3")
+        },
+        {
+            title: "Forever",
+            subTile: "Gyakie",
+            isFavorite: false,
+            imgSrc: require("../../assets/img/album_covers/gyakie.jpg"),
+            src: require("../../assets/music/freshmusic/Gyakie-Forever.mp3")
+        },
+        {
+            title: "Starboy",
+            subTile: "The Weekend",
+            isFavorite: false,
+            imgSrc: require("../../assets/img/album_covers/theWeekend.jpg"),
+            src: require("../../assets/music/freshmusic/TheWeekend-Starboy.mp3")
+        },
+        {
+            title: "Two",
+            subTitle: "Lil Uzi Vert",
+            isFavorite: false,
+            imgSrc: require("../../assets/img/album_covers/liluzi.jpg"),
+            src: require("../../assets/music/freshmusic/LilUziVert-Ronda(Winners).mp3")
+        },
+        
+    ]
     
     
 
@@ -72,43 +280,23 @@ export default function Home({navigation}) {
                         <ScrollView style={styles.center}>
 
                             <CardContainer title="Trending">
-
-                                <Card 
-                                    isFavorite = {true}
-                                    title="K.O.D" 
-                                    subTile="J. Cole"
-                                    imgSrc= {require("../../assets/img/album_covers/JColeKOD.jpg")}  
-                                />
-                                <Card 
-                                    isFavorite = {false}
-                                    title="Two®" 
-                                    subTile="Lil Uzi Vert"
-                                    imgSrc= {require("../../assets/img/album_covers/liluzi.jpg")}  
-                                />
-                                <Card 
-                                    isFavorite = {true}
-                                    title="Fall" 
-                                    subTile="Davido"
-                                    imgSrc= {require("../../assets/img/album_covers/agoodtime.jpeg")}  
-                                />
-                                <Card 
-                                    isFavorite = {true}
-                                    title="Ye" 
-                                    subTile="Burna Boy"
-                                    imgSrc= {require("../../assets/img/album_covers/burna.jpg")}  
-                                />
-                                <Card 
-                                    isFavorite = {false}
-                                    title="Oluejegba" 
-                                    subTile="Wizkid"
-                                    imgSrc= {require("../../assets/img/album_covers/wixkid.jpg")}  
-                                />
-                                <Card 
-                                    isFavorite = {true}
-                                    title="Pain" 
-                                    subTile="Ryan Jones"
-                                    imgSrc= {require("../../assets/img/album_covers/albumcover.jpg")}  
-                                />
+                                
+                                {
+                                    trending.map((song, index)=>(
+                                    <Card
+                                            isFavorite={song.isFavorite}
+                                            title={song.title}
+                                            subTile={song.subTile}
+                                            imgSrc={song.imgSrc}
+                                            src={song.src}
+                                            key={index}
+                                            handleOnCardPress={()=>{
+                                                handleOnCardPress(song.title, song.subTile, song.imgSrc, song.isFavorite, song.src)
+                                            }}
+                                        />
+                                    ))
+                                }
+                                
                                 <Card 
                                     title="More" 
                                     subTile="Tap to more"
@@ -120,37 +308,21 @@ export default function Home({navigation}) {
 
                             </CardContainer>
                             <CardContainer title="Fresh Music">
-
-                                <Card 
-                                    isFavorite = {false}
-                                    title="Mary" 
-                                    subTile="Sarkodie"
-                                    imgSrc= {require("../../assets/img/album_covers/Sarkodie.jpg")}  
-                                />
-                                <Card 
-                                    isFavorite = {false}
-                                    title="Eat" 
-                                    subTile="Stoneboy"
-                                    imgSrc= {require("../../assets/img/album_covers/stoneboy.jpg")}  
-                                />
-                                <Card 
-                                    isFavorite = {false}
-                                    title="K.O.D" 
-                                    subTile="J. Cole"
-                                    imgSrc= {require("../../assets/img/album_covers/Emeryld.jpg")}  
-                                />
-                                <Card 
-                                    isFavorite = {false}
-                                    title="Forever" 
-                                    subTile="Gyakie"
-                                    imgSrc= {require("../../assets/img/album_covers/gyakie.jpg")}  
-                                />
-                                <Card 
-                                    isFavorite = {false}
-                                    title="Starboy" 
-                                    subTile="The Weekend"
-                                    imgSrc= {require("../../assets/img/album_covers/theWeekend.jpg")}  
-                                />
+                                
+                                {
+                                    freshMusic.map((song, index)=>(
+                                        <Card
+                                            isFavorite={song.isFavorite}
+                                            title={song.title}
+                                            subTile={song.subTile}
+                                            imgSrc={song.imgSrc}
+                                            key={index}
+                                            handleOnCardPress={()=>{
+                                                handleOnCardPress(song.title, song.subTile, song.imgSrc, song.isFavorite, song.src)
+                                            }}
+                                        />
+                                    ))
+                                }
 
                                 <Card 
                                     title="More" 

@@ -26,7 +26,8 @@ import {
     selectSongFavoriteState,
     selectSongArtsiteState,
     selectSongTitleState,
-    selectSongImgSrcState
+    selectSongImgSrcState,
+    selectSongSrcState
 } from '../store/features/songSlice'
 
 // import MusicBar from './components/MusicBar'
@@ -59,6 +60,8 @@ export default function Navigation() {
     const AppRootStack = createStackNavigator()
     const Stack = createStackNavigator()
     const Drawer = createDrawerNavigator()
+
+    
 
     const appTheme = {
 

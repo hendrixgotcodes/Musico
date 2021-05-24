@@ -5,6 +5,8 @@ import Slider from '@react-native-community/slider'
 import { Ionicons } from '@expo/vector-icons'
 import {useSelector, useDispatch} from 'react-redux'
 
+
+
 import variables from '../utils/variables'
 
 import {
@@ -33,14 +35,18 @@ export default function ItemDetail({navigation}) {
     const songImgSrc = useSelector(selectSongImgSrcState)
     const songSrc = useSelector(selectSongSrcState)
 
+    console.log(songSrc.string);
+
+
+    // let filePath = "../assets/music/freshmusic/"
+
     const playPauseSong = () => {
 
-        isSongPlaying === true ? (
-            dispatch(songSliceActions.pauseSong())
-        ) : (
-            dispatch(songSliceActions.playSong())
-        )
+    console.log(songSrc);
 
+        // if(sound)
+
+        
     }
     const repeatSong = () => {
 

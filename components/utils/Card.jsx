@@ -1,24 +1,37 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {View, StyleSheet, Image, Text, Pressable} from 'react-native'
 import {useDispatch} from 'react-redux'
+
 
 import variables from '../../utils/variables'
 import {songSliceActions} from '../../store/features/songSlice'
 
-export default function Card({title, subTile, imgSrc, audioSrc, handleOnCardPress="", isFavorite}) {
+
+export default function Card({title, subTile, imgSrc, audioSrc, handleOnCardPress="", isFavorite, src=""}) {
 
     const dispatch = useDispatch()
+    
+
+
+
+
+    useEffect(() => {
+
+    //    Audio.setAudioModeAsync({
+    //         allowRecordingIOS: true,
+    //         interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+    //         playInSilentModeIOS: true,
+    //         interruptionModeIOS: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+    //         shouldDuckAndroid: true,
+    //         staysActiveInBackground:true
+    //     })
+
+       
+        
+    }, [])
 
     if(handleOnCardPress === ""){
-        handleOnCardPress = ()=>{
-
-            dispatch(songSliceActions.playSong())
-            dispatch(songSliceActions.setArtiste(title))
-            dispatch(songSliceActions.setTitle(subTile))
-            dispatch(songSliceActions.setImgSrc(imgSrc))
-            dispatch(songSliceActions.setFavorite(isFavorite))
-           
-        }
+        
     }
 
 
