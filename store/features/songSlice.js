@@ -43,7 +43,7 @@ const songSlice = createSlice({
             state.imgSrc = action.payload
         },
         setSongSrc: (state, action) => {
-            state.songSrc = "../assets/music/freshmusic/" + action.payload
+            state.songSrc = action.payload
         },
         setFavorite: (state, action)=>{
             state.favorite = action.payload

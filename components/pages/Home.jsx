@@ -82,9 +82,10 @@ export default function Home({navigation}) {
 
                 playbackObject.loadAsync(
                     src, 
-                    {shouldPlay: true}
+                    {shouldPlay: true, isLooping: isSongOnRepeat === true ? true : false}
                 )
                 .then((result)=>{
+                    console.log("loaded fresh");
                     setSoundObj(result)
                     dispatch(songSliceActions.playSong())
                     dispatch(songSliceActions.setArtiste(title))
@@ -100,43 +101,47 @@ export default function Home({navigation}) {
 
             }else if(soundObj !== null)
             {
-                if(soundObj.isLoaded && soundObj.isPlaying){
-                    playbackObject.setStatusAsync({shouldPlay: false})
+
+                console.log("sound not null");
+
+                if(soundObj.isLoaded && soundObj.isPlaying ===true && songSrc === src){
+                    playbackObject.pauseAsync()
                     .then((result)=>{
                         setSoundObj(result)
-                        dispatch(songSliceActions.playSong())
-                        dispatch(songSliceActions.setArtiste(title))
-                        dispatch(songSliceActions.setTitle(subTile))
-                        dispatch(songSliceActions.setImgSrc(imgSrc))
-                        dispatch(songSliceActions.setFavorite(isFavorite))
-                        dispatch(songSliceActions.setSongSrc(src))
+                        dispatch(songSliceActions.pauseSong())
+                        // dispatch(songSliceActions.setSongSrc(src))
                     })
                     .catch((err)=>{
                         console.log(err);
                     })
 
                 }else if(soundObj.isLoaded && soundObj.isPlaying === false && songSrc === src){
+
+                    console.log("same song detected");
                     playbackObject.playAsync()
                     .then((result)=>{
                         setSoundObj(result)
                         dispatch(songSliceActions.playSong())
-                        dispatch(songSliceActions.setArtiste(title))
-                        dispatch(songSliceActions.setTitle(subTile))
-                        dispatch(songSliceActions.setImgSrc(imgSrc))
-                        dispatch(songSliceActions.setFavorite(isFavorite))
-                        dispatch(songSliceActions.setSongSrc(src))
+                        // dispatch(songSliceActions.setSongSrc(src))
                     })
                     .catch((err)=>{
                         console.log(err);
                     })
 
                 }else if(soundObj.isLoaded && songSrc !== src){
+
+                    console.log("is playing, new song detected", songSrc, src);
+
                     playbackObject.stopAsync()
                     .then(()=>{
                         playbackObject.unloadAsync()
                         .then((result)=>{
+                            console.log("song unloaded");
+
                             playbackObject.loadAsync(src, {shouldPlay: true}).
                             then((result)=>{
+
+                                console.log("new song loaded and playing");
                                 setSoundObj(result)
                                 dispatch(songSliceActions.playSong())
                                 dispatch(songSliceActions.setArtiste(title))
