@@ -37,8 +37,10 @@ Audio.setAudioModeAsync({
 
     playsInSilentModeIOS : true, 
     allowsRecordingIOS: true, 
-    staysActiveInBackground: true
-    // interruptionModeIOS: 'INTERRUPTION_MODE_IOS_DUCK_OTHERS'
+    staysActiveInBackground: true,
+    interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+    shouldDuckAndroid: true,
+    playThroughEarpieceAndroid: true
 
 })
 const playbackObject = new Audio.Sound()
