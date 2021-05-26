@@ -33,8 +33,15 @@ import {songSliceAction,
 } from '../../store/features/songSlice'
 // import firebase from '../../services/firebase.js'
 
-const playbackObject = new Audio.Sound()
+Audio.setAudioModeAsync({
 
+    playsInSilentModeIOS : true, 
+    allowsRecordingIOS: true, 
+    staysActiveInBackground: true
+    // interruptionModeIOS: 'INTERRUPTION_MODE_IOS_DUCK_OTHERS'
+
+})
+const playbackObject = new Audio.Sound()
 
 
 export default function Home({navigation}) {
@@ -181,6 +188,13 @@ export default function Home({navigation}) {
             src: require("../../assets/music/freshmusic/JCole-KOD.mp3")
         },
         
+        {
+            title: "Tattoos",
+            subTile: "Young Thug",
+            isFavorite: true,
+            imgSrc: require("../../assets/img/album_covers/Slime_Season_3.jpg"),
+            src: require("../../assets/music/freshmusic/Young-Thug-Tattoos.mp3")
+        },
         {
             title: "Fall",
             subTile: "Davido",

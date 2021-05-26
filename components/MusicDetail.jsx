@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import Slider from '@react-native-community/slider'
 import { Ionicons } from '@expo/vector-icons'
 import {useSelector, useDispatch} from 'react-redux'
-
+import Toast from 'react-native-simple-toast'
 
 
 import variables from '../utils/variables'
@@ -35,16 +35,8 @@ export default function ItemDetail({navigation}) {
     const songImgSrc = useSelector(selectSongImgSrcState)
     const songSrc = useSelector(selectSongSrcState)
 
-    console.log(songSrc.string);
-
-
-    // let filePath = "../assets/music/freshmusic/"
-
     const playPauseSong = () => {
 
-    console.log(songSrc);
-
-        // if(sound)
 
         
     }
@@ -69,22 +61,14 @@ export default function ItemDetail({navigation}) {
                 message: songSrc,
             })
 
-            if (result.action === Share.sharedAction) {
-
-                if (result.activityType) {
-                    console.log(result.activityType);
-                }
-                else {
-                    console.log(result);
-                }
-
-            } else if (result.action === Share.dismissedAction) {
-                console.log("dimissed");
+           if (result.action === Share.dismissedAction) {
+                // console.log("dimissed");
+                Toast.show("Share action dismissed")
             }
 
         } catch (error) {
 
-            console.log(error);
+            Toast.show("Failed to share track")
 
         }
 
