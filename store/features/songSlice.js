@@ -12,7 +12,18 @@ const songSlice = createSlice({
         artiste: "unknown",
         title: "unknown",
         imgSrc: "",
-        songSrc: ""
+        songSrc: "",
+        soundObject: null,
+        duration: {
+           secs: 0,
+           mins: 0,
+           mill: 1
+        },
+        postion: {
+            secs: 0,
+            mins: 0,
+            mill: 1
+        }
 
     },
     reducers: {
@@ -47,8 +58,20 @@ const songSlice = createSlice({
         },
         setFavorite: (state, action)=>{
             state.favorite = action.payload
+        },
+        setSoundObject: (state, action)=>{
+            state.soundObject = action.payload
+        },
+        setDuration: (state,action)=>{
+            state.duration = action.payload
+            state.duration = action.payload
+        },
+        setPosition: (state, action)=>{
+            // state.postion.secs = action.payload.secs
+            // state.postion.mins = action.payload.mins
+            state.postion = action.payload
+            state.postion = action.payload
         }
-
 
     }
 
@@ -62,4 +85,7 @@ export const selectSongArtsiteState = (state) => state.song.artiste
 export const selectSongTitleState = (state) => state.song.title
 export const selectSongImgSrcState = (state) => state.song.imgSrc
 export const selectSongSrcState = (state) => state.song.songSrc
+export const selectSoundObject = (state)=> state.song.soundObject
+export const selectPosition = (state)=>state.song.postion
+export const selectDuration = (state)=>state.song.duration
 export default songSlice.reducer

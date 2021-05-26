@@ -29,7 +29,8 @@ import {songSliceAction,
         selectSongArtsiteState,
         selectSongTitleState,
         selectSongImgSrcState,
-        selectSongSrcState
+        selectSongSrcState,
+        selectSoundObject,
 } from '../../store/features/songSlice'
 // import firebase from '../../services/firebase.js'
 
@@ -58,8 +59,9 @@ export default function Home({navigation}) {
     const songTitle = useSelector(selectSongTitleState)
     const songImgSrc = useSelector(selectSongImgSrcState)
     const songSrc = useSelector(selectSongSrcState)
+    const soundObj = useSelector(selectSoundObject)
 
-    const [soundObj, setSoundObj] = useState(null)
+    // const [soundObj, setSoundObj] = useState(null)
     const [currentAudio, setCurrentAudio] = useState({})
 
     useEffect(() => {
@@ -67,11 +69,29 @@ export default function Home({navigation}) {
                 
     }, [])
 
-    // playbackObject.setOnPlaybackStatusUpdate(this.onPlaybackStatusHandler)
+    const onPlaybackStatusUpdate = (playbackStatus)=>{
 
-    // const onPlaybackStatusHandler = (playbackStatus)=>{
+        const durationMins = Math.floor(playbackStatus.durationMillis/60000)
+        const durationSecs = Math.floor((playbackStatus.durationMillis % 60000)/1000).toFixed(0)
+        const duration = {
+            secs: durationSecs,
+            mins: durationMins,
+            mill: playbackStatus.durationMillis
+        }
 
-    // }
+        const positionMins = Math.floor(playbackStatus.positionMillis/60000)
+        const positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
+
+        const position={
+            secs: positionSecs,
+            mins: positionMins,
+            mill: playbackStatus.positionMillis
+        }
+
+         dispatch(songSliceActions.setPosition(position))
+         dispatch(songSliceActions.setDuration(duration))
+
+    }
 
     const handleOnCardPress = (title, subTile, imgSrc, isFavorite, src)=>{
 
@@ -82,11 +102,16 @@ export default function Home({navigation}) {
 
                 playbackObject.loadAsync(
                     src, 
-                    {shouldPlay: true, isLooping: isSongOnRepeat === true ? true : false}
+                    {shouldPlay: true}
                 )
                 .then((result)=>{
-                    console.log("loaded fresh");
-                    setSoundObj(result)
+
+                    playbackObject.setStatusAsync({isLooping: isSongOnRepeat === true ? true : false})
+                    .then((result)=>{
+                        dispatch(songSliceActions.setSoundObject(result))
+                        playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
+                    })
+                    
                     dispatch(songSliceActions.playSong())
                     dispatch(songSliceActions.setArtiste(title))
                     dispatch(songSliceActions.setTitle(subTile))
@@ -102,25 +127,24 @@ export default function Home({navigation}) {
             }else if(soundObj !== null)
             {
 
-                console.log("sound not null");
-
                 if(soundObj.isLoaded && soundObj.isPlaying ===true && songSrc === src){
                     playbackObject.pauseAsync()
                     .then((result)=>{
-                        setSoundObj(result)
+                        dispatch(songSliceActions.setSoundObject(result))
                         dispatch(songSliceActions.pauseSong())
+                        console.log(result);
                         // dispatch(songSliceActions.setSongSrc(src))
                     })
                     .catch((err)=>{
+                        Toast.show("Sorry. Failed to play song.")
                         console.log(err);
                     })
 
                 }else if(soundObj.isLoaded && soundObj.isPlaying === false && songSrc === src){
 
-                    console.log("same song detected");
                     playbackObject.playAsync()
                     .then((result)=>{
-                        setSoundObj(result)
+                        dispatch(songSliceActions.setSoundObject(result))
                         dispatch(songSliceActions.playSong())
                         // dispatch(songSliceActions.setSongSrc(src))
                     })
@@ -130,19 +154,19 @@ export default function Home({navigation}) {
 
                 }else if(soundObj.isLoaded && songSrc !== src){
 
-                    console.log("is playing, new song detected", songSrc, src);
-
                     playbackObject.stopAsync()
                     .then(()=>{
                         playbackObject.unloadAsync()
                         .then((result)=>{
-                            console.log("song unloaded");
 
                             playbackObject.loadAsync(src, {shouldPlay: true}).
                             then((result)=>{
 
-                                console.log("new song loaded and playing");
-                                setSoundObj(result)
+                                playbackObject.setStatusAsync({isLooping: isSongOnRepeat === true ? true : false})
+                                .then((result)=>{
+                                    dispatch(songSliceActions.setSoundObject(result))
+                                })
+
                                 dispatch(songSliceActions.playSong())
                                 dispatch(songSliceActions.setArtiste(title))
                                 dispatch(songSliceActions.setTitle(subTile))

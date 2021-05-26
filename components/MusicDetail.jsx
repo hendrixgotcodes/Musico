@@ -5,6 +5,7 @@ import Slider from '@react-native-community/slider'
 import { Ionicons } from '@expo/vector-icons'
 import {useSelector, useDispatch} from 'react-redux'
 import Toast from 'react-native-simple-toast'
+import {audio} from 'expo-av'
 
 
 import variables from '../utils/variables'
@@ -17,16 +18,18 @@ import {
     selectSongArtsiteState,
     selectSongTitleState,
     selectSongImgSrcState,
-    selectSongSrcState
+    selectSongSrcState,
+    selectSoundObject,
+    selectPosition,
+    selectDuration
 } from '../store/features/songSlice'
-
 
 
 export default function ItemDetail({navigation}) {
 
 
-    const dispatch = useDispatch()
 
+    const dispatch = useDispatch()
     const isSongPlaying = useSelector(selectSongPlayingState)
     const isSongOnRepeat = useSelector(selectSongRepeatState)
     const isFavoriteSong = useSelector(selectSongFavoriteState)
@@ -34,10 +37,11 @@ export default function ItemDetail({navigation}) {
     const songTitle = useSelector(selectSongTitleState)
     const songImgSrc = useSelector(selectSongImgSrcState)
     const songSrc = useSelector(selectSongSrcState)
+    const songPosition = useSelector(selectPosition)
+    const songDuration = useSelector(selectDuration)
+    
 
     const playPauseSong = () => {
-
-
         
     }
     const repeatSong = () => {
@@ -46,6 +50,8 @@ export default function ItemDetail({navigation}) {
 
     }
     const favoriteSong = () => {
+
+        // soundObj.set
 
         dispatch(songSliceActions.toggleFavorite())
 
@@ -163,11 +169,12 @@ export default function ItemDetail({navigation}) {
                         minimumTrackTintColor={variables.colors.secondary}
                         maximumTrackTintColor={variables.colors.secondary}
                         thumbTintColor={"#fff"}
+                        value={songPosition.mill/songDuration.mill}
                     />
 
                     <View style={styles.valuesWrapper}>
-                        <Text style={styles.minimumValueCounter} >1:0</Text>
-                        <Text style={styles.maximumValueCounter} >2:30</Text>
+                        <Text style={styles.minimumValueCounter} >{songPosition.mins}:{songPosition.secs}</Text>
+                        <Text style={styles.maximumValueCounter} >{songDuration.mins}:{songPosition.secs} </Text>
                     </View>
 
                     <View style={styles.controlBox}>

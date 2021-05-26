@@ -1,6 +1,10 @@
 import React from 'react'
 import {View, StyleSheet, Text, Image, Pressable} from 'react-native'
 import {Ionicons} from '@expo/vector-icons'
+import {useSelector, useDispatch} from 'react-redux'
+import { selectPosition,
+    selectDuration
+} from '../store/features/songSlice' 
 
 import variables from '../utils/variables'
 
@@ -8,13 +12,16 @@ import variables from '../utils/variables'
 
 export default function MusicBar({imgSrc,title, subTile, isSongPlaying, onPressHandle, playOnPressHandle}) {
 
+    const songPosition = useSelector(selectPosition)
+    const songDuration = useSelector(selectDuration)
+
     return (
         <Pressable 
             style={[styles.container, {bottom: isSongPlaying === true ? 0 : "-100%"}]}
             onPress={onPressHandle}
         >
             
-            <View style={styles.loader} />
+            <View style={[styles.loader, {width: `${songPosition.mill/songDuration.mill}%`}]} />
 
             <View style={styles.itemDetails}>
 
@@ -58,7 +65,6 @@ const styles = StyleSheet.create({
         paddingVertical: 10
     },
     loader: {
-        width: "32%",
         height: "5%",
         backgroundColor: variables.colors.secondary,
         position: "absolute",
