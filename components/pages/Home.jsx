@@ -96,11 +96,8 @@ export default function Home({navigation, route}) {
                 )
                 .then((result)=>{
 
-                    playbackObject.setStatusAsync({isLooping: isSongOnRepeat === true ? true : false})
-                    .then((result)=>{
-                        dispatch(songSliceActions.setSoundObject(result))
-                        playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
-                    })
+                    dispatch(songSliceActions.setSoundObject(result))
+                    playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
                     
                     dispatch(songSliceActions.playSong())
                     dispatch(songSliceActions.setArtiste(title))
@@ -152,10 +149,7 @@ export default function Home({navigation, route}) {
                             playbackObject.loadAsync(src, {shouldPlay: true}).
                             then((result)=>{
 
-                                playbackObject.setStatusAsync({isLooping: isSongOnRepeat === true ? true : false})
-                                .then((result)=>{
-                                    dispatch(songSliceActions.setSoundObject(result))
-                                })
+                                dispatch(songSliceActions.setSoundObject(result))
 
                                 dispatch(songSliceActions.playSong())
                                 dispatch(songSliceActions.setArtiste(title))

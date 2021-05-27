@@ -41,8 +41,8 @@ const songSlice = createSlice({
         toggleFavorite: (state) => {
             state.favorite = state.favorite === true ? false : true
         },
-        toggleRepeat: (state) => {
-            state.repeat = state.repeat === true ? false : true
+        setRepeat: (state, action) => {
+            state.repeat = action.payload
         },
         setArtiste: (state, action) => {
             state.artiste = action.payload

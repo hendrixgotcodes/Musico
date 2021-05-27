@@ -63,7 +63,21 @@ export default function ItemDetail({navigation, route}) {
     }
     const repeatSong = () => {
 
-        dispatch(songSliceActions.toggleRepeat())
+        if(soundObj.isLoaded && soundObj.isLooping === false){
+            playbackObject.setStatusAsync({isLooping: true})
+            .then((result)=>{
+                dispatch(songSliceActions.setSoundObject(result))
+                dispatch(songSliceActions.setRepeat(true))
+                Toast.show("Repeating current song.")
+            })
+        }else if((soundObj.isLoaded && soundObj.isLooping === true)){
+            playbackObject.setStatusAsync({isLooping: false})
+            .then((result)=>{
+                dispatch(songSliceActions.setSoundObject(result))
+                dispatch(songSliceActions.setRepeat(false))
+                Toast.show("Repeat is off.")
+            })
+        }
 
     }
     const favoriteSong = () => {
@@ -81,7 +95,7 @@ export default function ItemDetail({navigation, route}) {
 
             const result = await Share.share({
                 title: `Listen to ${songTitle} by ${songArtiste} on Musico`,
-                message: songSrc,
+                message: soundObj.uri,
             })
 
            if (result.action === Share.dismissedAction) {
