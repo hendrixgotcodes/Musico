@@ -17,6 +17,8 @@ import Search from './pages/Search';
 import Settings from './pages/Settings';
 import DrawerContent from './utils/DrawerContent'
 import MusicDetail from './MusicDetail'
+import {Audio} from 'expo-av'
+
 
 import {selectUserLoginState, userSliceActions} from '../store/features/userSlice'
 import {
@@ -32,6 +34,19 @@ import {
 
 // import MusicBar from './components/MusicBar'
 // import MusicDetail from './components/MusicDetail'
+Audio.setAudioModeAsync({
+
+    playsInSilentModeIOS : true, 
+    allowsRecordingIOS: true, 
+    staysActiveInBackground: true,
+    interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+    shouldDuckAndroid: true,
+    playThroughEarpieceAndroid: true
+
+})
+
+const playbackObject = new Audio.Sound()
+
 
 export default function Navigation() {
 
@@ -96,7 +111,7 @@ export default function Navigation() {
 
                         >
                             
-                            <Drawer.Screen name="Home" component={Home} />
+                            <Drawer.Screen name="Home"  component={Home} initialParams={{playbackObject: playbackObject, user:"tuttu"}} />
                             <Drawer.Screen name="Search" component={Search} />
                             <Drawer.Screen name="Settings" component={Settings} />
                         </Drawer.Navigator>
@@ -137,7 +152,7 @@ export default function Navigation() {
            >
 
                 <AppRootStack.Screen name="Main" component={AppMainStackScreen} />
-                <AppRootStack.Screen name="MusicDetail" component={MusicDetail} />
+                <AppRootStack.Screen name="MusicDetail" component={MusicDetail} initialParams={{playbackObject: playbackObject}} />
 
            </AppRootStack.Navigator>
             

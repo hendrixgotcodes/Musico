@@ -17,7 +17,6 @@ import CardContainer from '../utils/CardContainer.jsx'
 import Card from '../utils/Card.jsx'
 import Navbar from '../../components/Navbar'
 import MusicBar from '../MusicBar'
-import {Audio} from 'expo-av'
 import Toast from 'react-native-simple-toast'
 
 import variables from '../../utils/variables'
@@ -34,23 +33,14 @@ import {songSliceAction,
 } from '../../store/features/songSlice'
 // import firebase from '../../services/firebase.js'
 
-Audio.setAudioModeAsync({
-
-    playsInSilentModeIOS : true, 
-    allowsRecordingIOS: true, 
-    staysActiveInBackground: true,
-    interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
-    shouldDuckAndroid: true,
-    playThroughEarpieceAndroid: true
-
-})
-const playbackObject = new Audio.Sound()
 
 
-export default function Home({navigation}) {
+export default function Home({navigation, route}) {
 
 
     const dispatch = useDispatch()
+    const playbackObject = route.params.playbackObject
+    // console.log(playbackObject, user,"jjgjg");
 
     const isSongPlaying = useSelector(selectSongPlayingState)
     const isSongOnRepeat = useSelector(selectSongRepeatState)

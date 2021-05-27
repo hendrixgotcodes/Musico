@@ -70,7 +70,7 @@ export default function SignIn({navigation}) {
 
                 setModalShown(false)
                 setModalText(``)
-                dispatch(userSliceActions.logIn())
+                // dispatch(userSliceActions.logIn())
             })
             .catch((err)=>{
                 setModalShown(false)

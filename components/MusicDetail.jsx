@@ -25,7 +25,7 @@ import {
 } from '../store/features/songSlice'
 
 
-export default function ItemDetail({navigation}) {
+export default function ItemDetail({navigation, route}) {
 
 
 
@@ -39,9 +39,26 @@ export default function ItemDetail({navigation}) {
     const songSrc = useSelector(selectSongSrcState)
     const songPosition = useSelector(selectPosition)
     const songDuration = useSelector(selectDuration)
+    const soundObj = useSelector(selectSoundObject)
+
+    const playbackObject = route.params.playbackObject
     
 
     const playPauseSong = () => {
+
+        if(soundObj.isLoaded && soundObj.isPlaying){
+            playbackObject.pauseAsync()
+            .then((result)=>{
+                dispatch(songSliceActions.setSoundObject(result))
+                dispatch(songSliceActions.pauseSong())
+            })
+        }else if(soundObj.isLoaded && soundObj.isPlaying === false){
+            playbackObject.playAsync()
+            .then((result)=>{
+                dispatch(songSliceActions.setSoundObject(result))
+                dispatch(songSliceActions.playSong())
+            })
+        }
         
     }
     const repeatSong = () => {
