@@ -205,7 +205,7 @@ export default function ItemDetail({navigation, route}) {
 
                     <View style={styles.valuesWrapper}>
                         <Text style={styles.minimumValueCounter} >{songPosition.mins}:{songPosition.secs}</Text>
-                        <Text style={styles.maximumValueCounter} >{songDuration.mins}:{songPosition.secs} </Text>
+                        <Text style={styles.maximumValueCounter} >{songDuration.mins}:{songDuration.secs} </Text>
                     </View>
 
                     <View style={styles.controlBox}>

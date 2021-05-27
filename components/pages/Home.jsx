@@ -61,13 +61,7 @@ export default function Home({navigation, route}) {
 
     const onPlaybackStatusUpdate = (playbackStatus)=>{
 
-        const durationMins = Math.floor(playbackStatus.durationMillis/60000)
-        const durationSecs = Math.floor((playbackStatus.durationMillis % 60000)/1000).toFixed(0)
-        const duration = {
-            secs: durationSecs,
-            mins: durationMins,
-            mill: playbackStatus.durationMillis
-        }
+        
 
         const positionMins = Math.floor(playbackStatus.positionMillis/60000)
         const positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
@@ -79,7 +73,6 @@ export default function Home({navigation, route}) {
         }
 
          dispatch(songSliceActions.setPosition(position))
-         dispatch(songSliceActions.setDuration(duration))
 
     }
 
@@ -97,6 +90,18 @@ export default function Home({navigation, route}) {
                 .then((result)=>{
 
                     dispatch(songSliceActions.setSoundObject(result))
+
+                    const durationMins = Math.floor(result.durationMillis/60000)
+                    const durationSecs = Math.floor((result.durationMillis % 60000)/1000).toFixed(0)
+                    const duration = {
+                        secs: durationSecs,
+                        mins: durationMins,
+                        mill: result.durationMillis
+                    }
+
+                    dispatch(songSliceActions.setDuration(duration))
+
+
                     playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
                     
                     dispatch(songSliceActions.playSong())
