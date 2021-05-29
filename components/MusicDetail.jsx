@@ -119,7 +119,7 @@ export default function ItemDetail({navigation, route}) {
 
     const handleOnslideComplete = (sliderValue)=>{
         let newSongPosition = songDuration.mill * sliderValue
-        playbackObject.playFromPositionAsync(newSongPosition)
+        playbackObject.setStatusAsync({positionMillis: newSongPosition})
     }
 
 
