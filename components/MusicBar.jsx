@@ -21,7 +21,7 @@ export default function MusicBar({imgSrc,title, subTile, isSongPlaying, onPressH
             onPress={onPressHandle}
         >
             
-            <View style={[styles.loader, {width: `${songPosition.mill/songDuration.mill}%`}]} />
+            <View style={[styles.loader]} />
 
             <View style={styles.itemDetails}>
 

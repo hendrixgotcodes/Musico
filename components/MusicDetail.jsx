@@ -117,6 +117,11 @@ export default function ItemDetail({navigation, route}) {
 
     }
 
+    const handleOnslideComplete = (sliderValue)=>{
+        let newSongPosition = songDuration.mill * sliderValue
+        playbackObject.playFromPositionAsync(newSongPosition)
+    }
+
 
     return (
 
@@ -200,7 +205,8 @@ export default function ItemDetail({navigation, route}) {
                         minimumTrackTintColor={variables.colors.secondary}
                         maximumTrackTintColor={variables.colors.secondary}
                         thumbTintColor={"#fff"}
-                        value={songPosition.mill/songDuration.mill}
+                        value={(songPosition.mill/songDuration.mill) == 0 ?  0 : songPosition.mill/songDuration.mill }
+                        onSlidingComplete ={handleOnslideComplete}
                     />
 
                     <View style={styles.valuesWrapper}>

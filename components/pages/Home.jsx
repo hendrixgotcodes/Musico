@@ -61,18 +61,29 @@ export default function Home({navigation, route}) {
 
     const onPlaybackStatusUpdate = (playbackStatus)=>{
 
-        
+        // if(playbackStatus.didJustFinish){
+        //     if(playbackStatus.isLooping !== true){
+        //         playbackObject.stopAsync()
+        //         .then(()=>{
+        //             playbackObject.unloadAsync()
+        //             .then(()=>{
+        //                 dispatch(songSliceActions.setSoundObject(null))
+        //                 dispatch(songSliceActions.pauseSong())
+        //             })
+        //         })
+        //     }
+        // }else{
+        // }
+            const positionMins = Math.floor(playbackStatus.positionMillis/60000)
+            const positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
 
-        const positionMins = Math.floor(playbackStatus.positionMillis/60000)
-        const positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
+            const position={
+                secs: positionSecs,
+                mins: positionMins,
+                mill: playbackStatus.positionMillis
+            }
 
-        const position={
-            secs: positionSecs,
-            mins: positionMins,
-            mill: playbackStatus.positionMillis
-        }
-
-         dispatch(songSliceActions.setPosition(position))
+            dispatch(songSliceActions.setPosition(position))
 
     }
 
@@ -92,7 +103,11 @@ export default function Home({navigation, route}) {
                     dispatch(songSliceActions.setSoundObject(result))
 
                     const durationMins = Math.floor(result.durationMillis/60000)
-                    const durationSecs = Math.floor((result.durationMillis % 60000)/1000).toFixed(0)
+                    let durationSecs = Math.floor((result.durationMillis % 60000)/1000).toFixed(0)
+
+                    durationSecs = durationSecs < 10 ? durationSecs + "0" : durationSecs 
+                    console.log(durationSecs)
+
                     const duration = {
                         secs: durationSecs,
                         mins: durationMins,
@@ -124,7 +139,6 @@ export default function Home({navigation, route}) {
                     .then((result)=>{
                         dispatch(songSliceActions.setSoundObject(result))
                         dispatch(songSliceActions.pauseSong())
-                        console.log(result);
                         // dispatch(songSliceActions.setSongSrc(src))
                     })
                     .catch((err)=>{
@@ -153,6 +167,20 @@ export default function Home({navigation, route}) {
 
                             playbackObject.loadAsync(src, {shouldPlay: true}).
                             then((result)=>{
+
+                                const durationMins = Math.floor(result.durationMillis/60000)
+                                let durationSecs = Math.floor((result.durationMillis % 60000)/1000).toFixed(0)
+                                
+                                durationSecs = durationSecs < 10 ? durationSecs + "0" : durationSecs 
+                                console.log(durationSecs);
+
+                                const duration = {
+                                    secs: durationSecs,
+                                    mins: durationMins,
+                                    mill: result.durationMillis
+                                }
+
+                                dispatch(songSliceActions.setDuration(duration))
 
                                 dispatch(songSliceActions.setSoundObject(result))
 
@@ -214,6 +242,13 @@ export default function Home({navigation, route}) {
             isFavorite: true,
             imgSrc: require("../../assets/img/album_covers/Slime_Season_3.jpg"),
             src: require("../../assets/music/freshmusic/Young-Thug-Tattoos.mp3")
+        },
+        {
+            title: "Problem",
+            subTile: "Young Thug",
+            isFavorite: true,
+            imgSrc: require("../../assets/img/album_covers/Slime_Season_3.jpg"),
+            src: require("../../assets/music/freshmusic/Young-Thug-Problem.mp3")
         },
         {
             title: "Fall",
