@@ -32,7 +32,6 @@ import {songSliceAction,
         selectSongSrcState,
         selectSoundObject,
 } from '../../store/features/songSlice'
-// import firebase from '../../services/firebase.js'
 
 
 
@@ -40,8 +39,6 @@ export default function Home({navigation, route}) {
 
 
     const dispatch = useDispatch()
-    // console.log(playbackObject, user,"jjgjg");
-
     const isSongPlaying = useSelector(selectSongPlayingState)
     const isSongOnRepeat = useSelector(selectSongRepeatState)
     const isFavoriteSong = useSelector(selectSongFavoriteState)
@@ -51,7 +48,6 @@ export default function Home({navigation, route}) {
     const songSrc = useSelector(selectSongSrcState)
     const soundObj = useSelector(selectSoundObject)
 
-    // const [soundObj, setSoundObj] = useState(null)
     const [currentAudio, setCurrentAudio] = useState({})
 
     useEffect(() => {
@@ -61,19 +57,18 @@ export default function Home({navigation, route}) {
 
     const onPlaybackStatusUpdate = (playbackStatus)=>{
 
-        // if(playbackStatus.didJustFinish){
-        //     if(playbackStatus.isLooping !== true){
-        //         playbackObject.stopAsync()
-        //         .then(()=>{
-        //             playbackObject.unloadAsync()
-        //             .then(()=>{
-        //                 dispatch(songSliceActions.setSoundObject(null))
-        //                 dispatch(songSliceActions.pauseSong())
-        //             })
-        //         })
-        //     }
-        // }else{
-        // }
+        if(playbackStatus.didJustFinish){
+            
+
+            if(playbackStatus.isLooping !== true){
+                playbackObject.stopAsync()
+                .then((result)=>{
+                    dispatch(songSliceActions.setSoundObject(result))
+                    dispatch(songSliceActions.pauseSong())
+                })
+            }
+        }else{
+        }
             const positionMins = Math.floor(playbackStatus.positionMillis/60000)
             const positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
 
