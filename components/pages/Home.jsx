@@ -10,6 +10,7 @@ import { Button,
 from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import {useSelector, useDispatch} from 'react-redux'
+import Toast from 'react-native-simple-toast'
 
 
 import Carousel from '../utils/Carousel.jsx'
@@ -17,7 +18,7 @@ import CardContainer from '../utils/CardContainer.jsx'
 import Card from '../utils/Card.jsx'
 import Navbar from '../../components/Navbar'
 import MusicBar from '../MusicBar'
-import Toast from 'react-native-simple-toast'
+import playbackObject from '../../providers/AudioProvider'
 
 import variables from '../../utils/variables'
 import {songSliceAction, 
@@ -39,7 +40,6 @@ export default function Home({navigation, route}) {
 
 
     const dispatch = useDispatch()
-    const playbackObject = route.params.playbackObject
     // console.log(playbackObject, user,"jjgjg");
 
     const isSongPlaying = useSelector(selectSongPlayingState)
@@ -468,11 +468,19 @@ export default function Home({navigation, route}) {
                                 navigation.navigate("MusicDetail")
                             }}
                             playOnPressHandle={()=>{
-                                isSongPlaying === true ? (
-                                    dispatch(songSliceActions.pauseSong())
-                                ) : (
-                                    dispatch(songSliceActions.playSong())
-                                )
+                                if(soundObj.isLoaded && soundObj.isPlaying){
+                                    playbackObject.pauseAsync()
+                                    .then((result)=>{
+                                        dispatch(songSliceActions.setSoundObject(result))
+                                        dispatch(songSliceActions.pauseSong())
+                                    })
+                                }else if(soundObj.isLoaded && soundObj.isPlaying === false){
+                                    playbackObject.playAsync()
+                                    .then((result)=>{
+                                        dispatch(songSliceActions.setSoundObject(result))
+                                        dispatch(songSliceActions.playSong())
+                                    })
+                                }
                             }}
                         />
 

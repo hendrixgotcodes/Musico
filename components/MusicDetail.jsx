@@ -8,8 +8,8 @@ import Toast from 'react-native-simple-toast'
 import {audio} from 'expo-av'
 
 
+import playbackObject from '../providers/AudioProvider'
 import variables from '../utils/variables'
-
 import {
     songSliceActions, 
     selectSongPlayingState, 
@@ -41,7 +41,7 @@ export default function ItemDetail({navigation, route}) {
     const songDuration = useSelector(selectDuration)
     const soundObj = useSelector(selectSoundObject)
 
-    const playbackObject = route.params.playbackObject
+    // const playbackObject = route.params.playbackObject
     
 
     const playPauseSong = () => {
