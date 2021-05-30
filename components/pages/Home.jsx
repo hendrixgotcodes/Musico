@@ -59,18 +59,37 @@ export default function Home({navigation, route}) {
 
         if(playbackStatus.didJustFinish){
             
-
-            if(playbackStatus.isLooping !== true){
                 playbackObject.stopAsync()
                 .then((result)=>{
                     dispatch(songSliceActions.setSoundObject(result))
                     dispatch(songSliceActions.pauseSong())
+
+                    console.log(isSongOnRepeat, isSongPlaying);
+
+                    if(isSongOnRepeat==true){
+                        console.log("yes");
+                        playbackObject.playAsync()
+                        .then((result)=>{
+                            dispatch(songSliceActions.setSoundObject(result))
+                            dispatch(songSliceActions.playSong())
+                        })
+                    }
                 })
-            }
-        }else{
+            // if(isSongOnRepeat==false){
+            // }
+            // else if(isSongOnRepeat==true){
+            //     console.log("yes");
+            //     playbackObject.playAsync()
+            //     .then((result)=>{
+            //         dispatch(songSliceActions.setSoundObject(result))
+            //         dispatch(songSliceActions.playSong())
+            //     })
+            // }
         }
+        else{
             const positionMins = Math.floor(playbackStatus.positionMillis/60000)
-            const positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
+            let positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
+            positionSecs = positionSecs < 10 ? positionSecs + "0" : positionSecs 
 
             const position={
                 secs: positionSecs,
@@ -79,6 +98,7 @@ export default function Home({navigation, route}) {
             }
 
             dispatch(songSliceActions.setPosition(position))
+        }
 
     }
 
@@ -101,7 +121,6 @@ export default function Home({navigation, route}) {
                     let durationSecs = Math.floor((result.durationMillis % 60000)/1000).toFixed(0)
 
                     durationSecs = durationSecs < 10 ? durationSecs + "0" : durationSecs 
-                    console.log(durationSecs)
 
                     const duration = {
                         secs: durationSecs,
@@ -259,6 +278,13 @@ export default function Home({navigation, route}) {
             imgSrc: require("../../assets/img/album_covers/burna.jpg"),
             src: require("../../assets/music/freshmusic/BurnaBoy-Ye.mp3")
         },
+        {
+            title: "Die Today",
+            subTile: "Lil Uzi Vert",
+            isFavorite: false,
+            imgSrc: require("../../assets/img/album_covers/liluzi.jpg"),
+            src: require("../../assets/music/freshmusic/Die-Today.mp3")
+        },
         // {
         //     title:"",
         //     subTile: "",
@@ -312,7 +338,7 @@ export default function Home({navigation, route}) {
             src: require("../../assets/music/freshmusic/TheWeekend-Starboy.mp3")
         },
         {
-            title: "Two",
+            title: "Ronda (Winners)",
             subTitle: "Lil Uzi Vert",
             isFavorite: false,
             imgSrc: require("../../assets/img/album_covers/liluzi.jpg"),

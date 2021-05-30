@@ -41,8 +41,6 @@ export default function ItemDetail({navigation, route}) {
     const songDuration = useSelector(selectDuration)
     const soundObj = useSelector(selectSoundObject)
 
-    // const playbackObject = route.params.playbackObject
-    
 
     const playPauseSong = () => {
 
@@ -63,20 +61,14 @@ export default function ItemDetail({navigation, route}) {
     }
     const repeatSong = () => {
 
-        if(soundObj.isLoaded && soundObj.isLooping === false){
-            playbackObject.setStatusAsync({isLooping: true})
-            .then((result)=>{
-                dispatch(songSliceActions.setSoundObject(result))
-                dispatch(songSliceActions.setRepeat(true))
-                Toast.show("Repeating current song.")
-            })
-        }else if((soundObj.isLoaded && soundObj.isLooping === true)){
-            playbackObject.setStatusAsync({isLooping: false})
-            .then((result)=>{
-                dispatch(songSliceActions.setSoundObject(result))
-                dispatch(songSliceActions.setRepeat(false))
-                Toast.show("Repeat is off.")
-            })
+        if(isSongOnRepeat == false){
+
+            dispatch(songSliceActions.setRepeat(true))
+            Toast.show("Repeating current song.")
+
+        }else if(isSongOnRepeat == true){
+            dispatch(songSliceActions.setRepeat(false))
+            Toast.show("Repeat is off.")
         }
 
     }

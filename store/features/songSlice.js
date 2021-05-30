@@ -64,13 +64,13 @@ const songSlice = createSlice({
         },
         setDuration: (state,action)=>{
             state.duration = action.payload
-            state.duration = action.payload
+            // state.duration = action.payload
         },
         setPosition: (state, action)=>{
             // state.postion.secs = action.payload.secs
             // state.postion.mins = action.payload.mins
             state.postion = action.payload
-            state.postion = action.payload
+            // state.postion = action.payload
         }
 
     }
