@@ -10,7 +10,7 @@ import variables from '../utils/variables'
 
 
 
-export default function MusicBar({imgSrc,title, subTile, isSongPlaying, onPressHandle, playOnPressHandle}) {
+export default function MusicBar({imgSrc,title, subTitle, isSongPlaying, onPressHandle, playOnPressHandle}) {
 
     const songPosition = useSelector(selectPosition)
     const songDuration = useSelector(selectDuration)
@@ -31,7 +31,7 @@ export default function MusicBar({imgSrc,title, subTile, isSongPlaying, onPressH
                 />
                 <View>
                     <Text style={styles.title} >{title}</Text>
-                    <Text style={styles.subTile}>{subTile}</Text>
+                    <Text style={styles.subTitle}>{subTitle}</Text>
                 </View>
 
             </View>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: "white"
     },
-    subTile:{
+    subTitle:{
         fontWeight: "bold",
         color: "white"
     }

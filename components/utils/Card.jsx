@@ -7,7 +7,7 @@ import variables from '../../utils/variables'
 import {songSliceActions} from '../../store/features/songSlice'
 
 
-export default function Card({title, subTile, imgSrc, audioSrc, handleOnCardPress="", isFavorite, src=""}) {
+export default function Card({title, subTitle, imgSrc, audioSrc, handleOnCardPress="", isFavorite, src=""}) {
 
     const dispatch = useDispatch()
     
@@ -42,7 +42,7 @@ export default function Card({title, subTile, imgSrc, audioSrc, handleOnCardPres
 
             <View style={styles.infoBox} >
                 <Text style={styles.title}>{title}</Text>
-                <Text style={styles.subTile}>{subTile}</Text>
+                <Text style={styles.subTitle}>{subTitle}</Text>
             </View>
             
         </Pressable>
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
 
     },
-    subTile: {
+    subTitle: {
         fontSize: 8,
         color: "white",
     }

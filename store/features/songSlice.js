@@ -23,7 +23,9 @@ const songSlice = createSlice({
             secs: 0,
             mins: 0,
             mill: 1
-        }
+        },
+        index: 0,
+        playlist: null
 
     },
     reducers: {
@@ -71,6 +73,12 @@ const songSlice = createSlice({
             // state.postion.mins = action.payload.mins
             state.postion = action.payload
             // state.postion = action.payload
+        },
+        setIndex: (state, action)=>{
+            state.index = action.payload
+        },
+        setSongPlaylist: (state,action)=>{
+            state.playlist = action.payload
         }
 
     }
@@ -88,4 +96,6 @@ export const selectSongSrcState = (state) => state.song.songSrc
 export const selectSoundObject = (state)=> state.song.soundObject
 export const selectPosition = (state)=>state.song.postion
 export const selectDuration = (state)=>state.song.duration
+export const selectSongIndex = (state)=>state.song.index
+export const selectSongPlaylist = (state)=>state.song.playlist
 export default songSlice.reducer

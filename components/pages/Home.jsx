@@ -31,6 +31,8 @@ import {songSliceAction,
         selectSongImgSrcState,
         selectSongSrcState,
         selectSoundObject,
+        selectSongIndex,
+        selectSongPlaylist,
 } from '../../store/features/songSlice'
 
 
@@ -47,8 +49,11 @@ export default function Home({navigation, route}) {
     const songImgSrc = useSelector(selectSongImgSrcState)
     const songSrc = useSelector(selectSongSrcState)
     const soundObj = useSelector(selectSoundObject)
+    // const songIndex = useSelector(selectSongIndex)
+    const songPlaylist = useSelector(selectSongPlaylist)
 
     const [currentAudio, setCurrentAudio] = useState({})
+    const [songIndex, setSongIndex] = useState(4)
 
     useEffect(() => {
 
@@ -64,15 +69,27 @@ export default function Home({navigation, route}) {
                     dispatch(songSliceActions.setSoundObject(result))
                     dispatch(songSliceActions.pauseSong())
 
-                    console.log(isSongOnRepeat, isSongPlaying);
-
-                    if(isSongOnRepeat==true){
-                        console.log("yes");
+                    if(isSongOnRepeat ===true){
                         playbackObject.playAsync()
                         .then((result)=>{
                             dispatch(songSliceActions.setSoundObject(result))
                             dispatch(songSliceActions.playSong())
                         })
+                    }
+                    else{
+                        const playlist = songPlaylist == "trending" ? trending : freshMusic
+                        const song = playlist[songIndex+1]
+
+                        playbackObject.unloadAsync()
+                        .then(()=>{
+                            dispatch(songSliceActions.setSoundObject(result))
+
+                            // handleOnCardPress(song.title, song.subTitle, song.imgSrc, song.src, 5, "trending")
+                        })
+
+
+                        
+
                     }
                 })
             // if(isSongOnRepeat==false){
@@ -90,6 +107,8 @@ export default function Home({navigation, route}) {
             const positionMins = Math.floor(playbackStatus.positionMillis/60000)
             let positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
             positionSecs = positionSecs < 10 ? positionSecs + "0" : positionSecs 
+            
+            console.log((typeof positionSecs), (typeof positionMins), typeof positionMillis);
 
             const position={
                 secs: positionSecs,
@@ -102,9 +121,10 @@ export default function Home({navigation, route}) {
 
     }
 
-    const handleOnCardPress = (title, subTile, imgSrc, isFavorite, src)=>{
+    const handleOnCardPress = (title, subTitle, imgSrc, isFavorite, src, index, playlist)=>{
 
-
+            // const list = playlist == "trending" ? trending : freshMusic
+            // console.log(list[index]);
             
 
             if(soundObj === null ){
@@ -134,13 +154,18 @@ export default function Home({navigation, route}) {
                     playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
                     
                     dispatch(songSliceActions.playSong())
+                    dispatch(songSliceActions.setIndex(index))
+                    setSongIndex(index)
                     dispatch(songSliceActions.setArtiste(title))
-                    dispatch(songSliceActions.setTitle(subTile))
+                    dispatch(songSliceActions.setTitle(subTitle))
                     dispatch(songSliceActions.setImgSrc(imgSrc))
                     dispatch(songSliceActions.setFavorite(isFavorite))
                     dispatch(songSliceActions.setSongSrc(src))
+                    dispatch(songSliceActions.setSongPlaylist(playlist))
                 })
                 .catch((err)=>{
+
+                    console.log(err);
 
                     Toast.show("Sorry an error occurred while playing song.", Toast.LONG)
                 })
@@ -200,10 +225,11 @@ export default function Home({navigation, route}) {
 
                                 dispatch(songSliceActions.playSong())
                                 dispatch(songSliceActions.setArtiste(title))
-                                dispatch(songSliceActions.setTitle(subTile))
+                                dispatch(songSliceActions.setTitle(subTitle))
                                 dispatch(songSliceActions.setImgSrc(imgSrc))
                                 dispatch(songSliceActions.setFavorite(isFavorite))
                                 dispatch(songSliceActions.setSongSrc(src))
+                                
                             })
                         })
                     })
@@ -244,7 +270,7 @@ export default function Home({navigation, route}) {
     const trending = [
         {
             title: "K.O.D",
-            subTile: "J.COle",
+            subTitle: "J.COle",
             isFavorite: true,
             imgSrc: require("../../assets/img/album_covers/JColeKOD.jpg"),
             src: require("../../assets/music/freshmusic/JCole-KOD.mp3")
@@ -252,48 +278,48 @@ export default function Home({navigation, route}) {
         
         {
             title: "Tattoos",
-            subTile: "Young Thug",
+            subTitle: "Young Thug",
             isFavorite: true,
             imgSrc: require("../../assets/img/album_covers/Slime_Season_3.jpg"),
             src: require("../../assets/music/freshmusic/Young-Thug-Tattoos.mp3")
         },
         {
             title: "Problem",
-            subTile: "Young Thug",
+            subTitle: "Young Thug",
             isFavorite: true,
             imgSrc: require("../../assets/img/album_covers/Slime_Season_3.jpg"),
             src: require("../../assets/music/freshmusic/Young-Thug-Problem.mp3")
         },
         {
             title: "Fall",
-            subTile: "Davido",
+            subTitle: "Davido",
             isFavorite: true,
             imgSrc: require("../../assets/img/album_covers/agoodtime.jpeg"),
             src: require("../../assets/music/freshmusic/Davido-Fall.mp3")
         },
         {
             title:"Ye",
-            subTile: "Burna Boy",
+            subTitle: "Burna Boy",
             isFavorite: true,
             imgSrc: require("../../assets/img/album_covers/burna.jpg"),
             src: require("../../assets/music/freshmusic/BurnaBoy-Ye.mp3")
         },
         {
             title: "Die Today",
-            subTile: "Lil Uzi Vert",
+            subTitle: "Lil Uzi Vert",
             isFavorite: false,
             imgSrc: require("../../assets/img/album_covers/liluzi.jpg"),
             src: require("../../assets/music/freshmusic/Die-Today.mp3")
         },
         // {
         //     title:"",
-        //     subTile: "",
+        //     subTitle: "",
         //     isFavorite: true,
         //     imgSrc: require("")
         // },
         {
             title:"Ojuelegba",
-            subTile: "Wizkid",
+            subTitle: "Wizkid",
             isFavorite: false,
             imgSrc: require("../../assets/img/album_covers/wixkid.jpg"),
             // src: require("../../assets/music/Fresh Music/WIZKID-OJUELEGBA.mp3")
@@ -301,7 +327,7 @@ export default function Home({navigation, route}) {
         },
         {
             title:"Pain",
-            subTile: "Ryan Jones",
+            subTitle: "Ryan Jones",
             isFavorite: true,
             imgSrc: require("../../assets/img/album_covers/albumcover.jpg"),
             src: require("../../assets/music/freshmusic/RyanJones-Pain.mp3")
@@ -311,31 +337,38 @@ export default function Home({navigation, route}) {
     const freshMusic = [
         {
             title: "Mary",
-            subTile: "Sarkodie",
+            subTitle: "Sarkodie",
             isFavorite: false,
             imgSrc: require("../../assets/img/album_covers/Sarkodie.jpg"),
             src: require("../../assets/music/freshmusic/Sarkodie-Mary.mp3")
         },
         {
             title: "Eat",
-            subTile: "Stoneboy",
+            subTitle: "Stoneboy",
             isFavorite: false,
             imgSrc: require("../../assets/img/album_covers/stoneboy.jpg"),
             src: require("../../assets/music/freshmusic/Stoneboy-Eat.mp3")
         },
         {
             title: "Forever",
-            subTile: "Gyakie",
+            subTitle: "Gyakie",
             isFavorite: false,
             imgSrc: require("../../assets/img/album_covers/gyakie.jpg"),
             src: require("../../assets/music/freshmusic/Gyakie-Forever.mp3")
         },
         {
             title: "Starboy",
-            subTile: "The Weekend",
+            subTitle: "The Weekend",
             isFavorite: false,
             imgSrc: require("../../assets/img/album_covers/theWeekend.jpg"),
             src: require("../../assets/music/freshmusic/TheWeekend-Starboy.mp3")
+        },
+        {
+            title: "Sauce",
+            subTitle: "Lil Uzi ft Playboi Carti",
+            isFavorite: false,
+            imgSrc: require("../../assets/img/album_covers/liluziPlayboi.jpg"),
+            src: require("../../assets/music/freshmusic/Lil-Uzi-Vert-Sauce-Real-Hard.mp3")
         },
         {
             title: "Ronda (Winners)",
@@ -376,12 +409,12 @@ export default function Home({navigation, route}) {
                                     <Card
                                             isFavorite={song.isFavorite}
                                             title={song.title}
-                                            subTile={song.subTile}
+                                            subTitle={song.subTitle}
                                             imgSrc={song.imgSrc}
                                             src={song.src}
                                             key={index}
                                             handleOnCardPress={()=>{
-                                                handleOnCardPress(song.title, song.subTile, song.imgSrc, song.isFavorite, song.src)
+                                                handleOnCardPress(song.title, song.subTitle, song.imgSrc, song.isFavorite, song.src, index, "trending")
                                             }}
                                         />
                                     ))
@@ -389,7 +422,7 @@ export default function Home({navigation, route}) {
                                 
                                 <Card 
                                     title="More" 
-                                    subTile="Tap to more"
+                                    subTitle="Tap to more"
                                     imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
                                     handleOnCardPress = {()=>{console.log("hi");}}
                                 />
@@ -404,11 +437,11 @@ export default function Home({navigation, route}) {
                                         <Card
                                             isFavorite={song.isFavorite}
                                             title={song.title}
-                                            subTile={song.subTile}
+                                            subTitle={song.subTitle}
                                             imgSrc={song.imgSrc}
                                             key={index}
                                             handleOnCardPress={()=>{
-                                                handleOnCardPress(song.title, song.subTile, song.imgSrc, song.isFavorite, song.src)
+                                                handleOnCardPress(song.title, song.subTitle, song.imgSrc, song.isFavorite, song.src, index, "freshMusic")
                                             }}
                                         />
                                     ))
@@ -416,7 +449,7 @@ export default function Home({navigation, route}) {
 
                                 <Card 
                                     title="More" 
-                                    subTile="Tap to more"
+                                    subTitle="Tap to more"
                                     imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
                                     handleOnCardPress = {()=>{console.log("hi");}}
                                 />
@@ -429,39 +462,39 @@ export default function Home({navigation, route}) {
                                 <Card 
                                     isFavorite = {true}
                                     title="Shatta Wale" 
-                                    subTile=""
+                                    subTitle=""
                                     imgSrc= {require("../../assets/img/album_covers/shatta.jpg")}  
                                 />
                                 <Card 
                                     isFavorite = {false}
                                     title="Jay Bahd" 
-                                    subTile=""
+                                    subTitle=""
                                     imgSrc= {require("../../assets/img/album_covers/jaybad.jpg")}  
                                 />
                                 <Card 
                                     isFavorite = {true}
                                     title="O'Kenneth" 
-                                    subTile=""
+                                    subTitle=""
                                     imgSrc= {require("../../assets/img/album_covers/oken.jpg")}  
                                 />
                                 <Card 
                                 
                                     title="K.O.D" 
-                                    subTile="J. Cole"
+                                    subTitle="J. Cole"
                                     isFavorite = {false}
                                     imgSrc= {require("../../assets/img/album_covers/Emeryld.jpg")}  
                                 />
                                 <Card 
                                 
                                     title="Wizkid" 
-                                    subTile=""
+                                    subTitle=""
                                     isFavorite = {false}
                                     imgSrc= {require("../../assets/img/album_covers/wixkid.jpg")}  
                                 />
                                 <Card 
                                 
                                     title="Travis Scott" 
-                                    subTile=""
+                                    subTitle=""
                                     isFavorite = {true}
                                     imgSrc= {require("../../assets/img/album_covers/stargazing.jpg")}  
                                 />
@@ -469,7 +502,7 @@ export default function Home({navigation, route}) {
                                 <Card 
                                 
                                     title="More" 
-                                    subTile="Tap to more"
+                                    subTitle="Tap to more"
                                     imgSrc= {require("../../assets/img/album_covers/Playlist.png")}  
                                     handleOnCardPress = {()=>{console.log("hi");}}
                                 />
@@ -483,7 +516,7 @@ export default function Home({navigation, route}) {
                         <MusicBar 
                             imgSrc={songImgSrc}
                             title= {songArtiste}
-                            subTile= {songTitle}
+                            subTitle= {songTitle}
                             isSongPlaying = {isSongPlaying}
                             onPressHandle={()=>{
                                 navigation.navigate("MusicDetail")
