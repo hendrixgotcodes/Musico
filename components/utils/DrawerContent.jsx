@@ -19,6 +19,7 @@ import variables from '../../utils/variables'
 import {selectUserLoginState, selectUserPropsState,userSliceActions} from '../../store/features/userSlice'
 import fb, {GoogleProvider} from '../../services/firebase'
 import Modal from '../utils/Modal'
+import playbackObject from '../../providers/AudioProvider'
 
 
 
@@ -60,7 +61,9 @@ export default function DrawerContent(props) {
         setModalShown(true)
         setModalText("Signing you out...")
 
-        fb.auth()
+        playbackObject.stopAsync()
+        .then(()=>{
+            fb.auth()
             .signOut()
             .then(()=>{
                 setModalShown(true)
@@ -69,6 +72,7 @@ export default function DrawerContent(props) {
                 dispatch(userSliceActions.logOut())
             })
 
+        })
 
     }
     

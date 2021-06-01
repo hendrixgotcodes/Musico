@@ -76,21 +76,21 @@ export default function Home({navigation, route}) {
                             dispatch(songSliceActions.playSong())
                         })
                     }
-                    else{
-                        const playlist = songPlaylist == "trending" ? trending : freshMusic
-                        const song = playlist[songIndex+1]
+                    // else{
+                    //     const playlist = songPlaylist == "trending" ? trending : freshMusic
+                    //     const song = playlist[songIndex+1]
 
-                        playbackObject.unloadAsync()
-                        .then(()=>{
-                            dispatch(songSliceActions.setSoundObject(result))
+                    //     playbackObject.unloadAsync()
+                    //     .then(()=>{
+                    //         dispatch(songSliceActions.setSoundObject(result))
 
-                            // handleOnCardPress(song.title, song.subTitle, song.imgSrc, song.src, 5, "trending")
-                        })
+                    //         // handleOnCardPress(song.title, song.subTitle, song.imgSrc, song.src, 5, "trending")
+                    //     })
 
 
                         
 
-                    }
+                    // }
                 })
             // if(isSongOnRepeat==false){
             // }
@@ -108,7 +108,6 @@ export default function Home({navigation, route}) {
             let positionSecs = Math.floor((playbackStatus.positionMillis % 60000)/1000).toFixed(0)
             positionSecs = positionSecs < 10 ? positionSecs + "0" : positionSecs 
             
-            console.log((typeof positionSecs), (typeof positionMins), typeof positionMillis);
 
             const position={
                 secs: positionSecs,
